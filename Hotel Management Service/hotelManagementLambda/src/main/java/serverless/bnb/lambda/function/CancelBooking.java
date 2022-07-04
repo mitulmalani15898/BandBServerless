@@ -1,0 +1,105 @@
+package serverless.bnb.lambda.function;
+
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import serverless.bnb.lambda.DynamoDB;
+import serverless.bnb.lambda.model.RoomBooking;
+import serverless.bnb.lambda.model.Status;
+
+import java.util.*;
+
+public class CancelBooking implements
+        RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
+
+    @Override
+    public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent requestEvent, Context context) {
+
+        Map<String, String> queryParams = requestEvent.getHeaders();
+        String contentType = queryParams.get("Content-Type");
+        APIGatewayProxyResponseEvent response;
+
+        if (!contentType.isEmpty() && !contentType.contains("application/json")) {
+            return getAPIGatewayResponse(400, "Invalid content type");
+        }
+
+        try {
+            String requestBody = requestEvent.getBody();
+            BookingCancelRequest request = new ObjectMapper().readValue(requestBody, BookingCancelRequest.class);
+            if (request.isValid()) {
+                RoomBooking booking = getBooking(request.getUserId(), request.getBookingNumber());
+                if (Objects.isNull(booking)) {
+                    response =  getAPIGatewayResponse(400, "Booking does not exists");
+                } else {
+                    cancelBooking(booking);
+                    System.out.println("Booking cancelled : " + booking.toString());
+                    response = getAPIGatewayResponse(200, "Booking cancelled successfully");
+                }
+            } else {
+                response = getAPIGatewayResponse(400, "Invalid input");
+            }
+
+        }
+        catch (Exception e) {
+            System.err.println("An exception occurred while processing the request :" + e.getMessage());
+            e.printStackTrace();
+            response = getAPIGatewayResponse(500,
+                    "An error occurred while processing the request");
+        }
+        return response;
+    }
+
+    RoomBooking getBooking(String userId, String bookingNumber) {
+        Map<String, AttributeValue> roomBookingAttrVal = new HashMap<>();
+        roomBookingAttrVal.put(":userId", new AttributeValue().withS(userId));
+        roomBookingAttrVal.put(":bookingNumber", new AttributeValue().withS(bookingNumber));
+        DynamoDBScanExpression roomBookingExp = new DynamoDBScanExpression()
+                .withFilterExpression("UserId = :userId and BookingNumber = :bookingNumber")
+                .withExpressionAttributeValues(roomBookingAttrVal);
+        List<RoomBooking> roomBookings = DynamoDB.getMapper().scan(RoomBooking.class, roomBookingExp);
+        return Optional.ofNullable(roomBookings).isPresent() && roomBookings.size() > 0 ? roomBookings.get(0) : null;
+    }
+
+    void cancelBooking(RoomBooking booking) {
+        booking.setStatus(Status.CANCELLED);
+        DynamoDB.getMapper().save(booking);
+    }
+
+    public APIGatewayProxyResponseEvent getAPIGatewayResponse(int statusCode, String responseBody) {
+        APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
+        response.setBody(responseBody);
+        response.setStatusCode(statusCode);
+        Map<String, String> headers = new HashMap<>();
+        headers.put("X-Custom-Header", "Response: Browse Rooms");
+        headers.put("Content-Type", "text/plain");
+        headers.put("Access-Control-Allow-Origin", "*");
+        response.setHeaders(headers);
+        return response;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class BookingCancelRequest {
+        private String userId;
+        private String bookingNumber;
+
+        @JsonIgnore
+        public boolean isValid() {
+            return Objects.nonNull(userId)
+                    && !userId.isBlank()
+                    && Objects.nonNull(bookingNumber)
+                    && !bookingNumber.isBlank();
+        }
+    }
+}

@@ -25,8 +25,8 @@ public class BookRoom implements
         RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent>  {
 
     @Override
-    public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent requestEvent, Context context) {
-        Map<String, String> queryParams = requestEvent.getHeaders();
+    public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent request, Context context) {
+        Map<String, String> queryParams = request.getHeaders();
         String contentType = queryParams.get("Content-Type");
         APIGatewayProxyResponseEvent response;
 
@@ -35,12 +35,13 @@ public class BookRoom implements
         }
 
         try {
-            String requestBody = requestEvent.getBody();
+            String requestBody = request.getBody();
             BookRoomInput input = new ObjectMapper().readValue(requestBody, BookRoomInput.class);
             if (!input.isValid()) {
                 return getAPIGatewayResponse(400, "Invalid input", "text/plain");
             }
-            else {
+            else
+            {
                 if (isAvailable(input)) {
                     createBooking(input);
                     response = getAPIGatewayResponse(200, "Booking created successfully", "text/plain");

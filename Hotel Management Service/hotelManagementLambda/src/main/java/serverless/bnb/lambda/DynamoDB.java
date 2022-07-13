@@ -10,10 +10,10 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 
 public class DynamoDB {
 
-    private static String ACCESS_KEY = "AKIAQVMKKDE3SWBCF7TL";
-    private static String SECRET_KEY = "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";
-    private static String AWS_REGION = "us-east-1";
-    private static String ENDPOINT_URL = "dynamodb.us-east-1.amazonaws.com";
+    private static String ACCESS_KEY = System.getenv("DYNAMO_DB_ACCESS_KEY");
+    private static String SECRET_KEY = System.getenv("DYNAMO_DB_SECRET_KEY");
+    private static String AWS_REGION = System.getenv("DYNAMO_DB_REGION");
+    private static String ENDPOINT_URL = String.format("dynamodb.%s.amazonaws.com", AWS_REGION);
 
     public static AmazonDynamoDB getDynamoDBClient() {
         AWSCredentials dynamoDBCredentials = new BasicAWSCredentials(ACCESS_KEY, SECRET_KEY);
@@ -29,4 +29,5 @@ public class DynamoDB {
         AmazonDynamoDB dynamoDB = getDynamoDBClient();
         return new DynamoDBMapper(dynamoDB);
     }
+
 }

@@ -96,13 +96,13 @@ public class BrowseRooms implements
         return rooms;
     }
 
-    APIGatewayProxyResponseEvent getAPIGatewayResponse(int statusCode, String responseBody, String contentType) {
+    private APIGatewayProxyResponseEvent getAPIGatewayResponse(int statusCode, String responseBody, String contentType) {
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
         response.setBody(responseBody);
         response.setStatusCode(statusCode);
         Map<String, String> headers = new HashMap<>();
         headers.put("X-Custom-Header", "Response: Browse Rooms");
-        headers.put("Content-Type", "application/json");
+        headers.put("Content-Type", contentType);
         headers.put("Access-Control-Allow-Origin", "*");
         response.setHeaders(headers);
         return response;

@@ -58,7 +58,7 @@ public class CancelBooking implements
         return response;
     }
 
-    RoomBooking getBooking(String userId, String bookingNumber) {
+    private RoomBooking getBooking(String userId, String bookingNumber) {
         Map<String, AttributeValue> roomBookingAttrVal = new HashMap<>();
         roomBookingAttrVal.put(":userId", new AttributeValue().withS(userId));
         roomBookingAttrVal.put(":bookingNumber", new AttributeValue().withS(bookingNumber));
@@ -69,12 +69,12 @@ public class CancelBooking implements
         return Optional.ofNullable(roomBookings).isPresent() && roomBookings.size() > 0 ? roomBookings.get(0) : null;
     }
 
-    void cancelBooking(RoomBooking booking) {
+    private void cancelBooking(RoomBooking booking) {
         booking.setStatus(Status.CANCELLED);
         DynamoDB.getMapper().save(booking);
     }
 
-    public APIGatewayProxyResponseEvent getAPIGatewayResponse(int statusCode, String responseBody) {
+    private APIGatewayProxyResponseEvent getAPIGatewayResponse(int statusCode, String responseBody) {
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
         response.setBody(responseBody);
         response.setStatusCode(statusCode);

@@ -8,13 +8,12 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import serverless.bnb.lambda.DynamoDB;
 import serverless.bnb.lambda.model.RoomBooking;
-import serverless.bnb.lambda.model.RoomType;
-import serverless.bnb.lambda.model.Status;
 
 import java.util.*;
 
@@ -38,8 +37,9 @@ public class ViewBookings implements
                 else
                 {
                     System.out.println("Bookings found: " + bookings.size());
+                    ViewBookingsResponse viewBookingsResponse = new ViewBookingsResponse(true, bookings);
                     ObjectMapper mapper = new ObjectMapper();
-                    String jsonResponse = mapper.writeValueAsString(bookings);
+                    String jsonResponse = mapper.writeValueAsString(viewBookingsResponse);
                     response = getAPIGatewayResponse(200, jsonResponse, "application/json");
                 }
             }
@@ -71,7 +71,6 @@ public class ViewBookings implements
         response.setBody(responseBody);
         response.setStatusCode(statusCode);
         Map<String, String> headers = new HashMap<>();
-        headers.put("X-Custom-Header", "Response: Browse Rooms");
         headers.put("Content-Type", contentType);
         headers.put("Access-Control-Allow-Origin", "*");
         response.setHeaders(headers);
@@ -81,6 +80,7 @@ public class ViewBookings implements
     @Getter
     public static class SearchCriteria {
 
+        public static final String AND = " and ";
         private String bookingNumber;
         private String userId;
         private boolean hasBookingNumber;
@@ -101,7 +101,8 @@ public class ViewBookings implements
             Map<String, AttributeValue> expression = new HashMap<>();
             if (hasBookingNumber) {
                 expression.put(":bookingNumber", new AttributeValue().withS(bookingNumber));
-            } else if (hasUserId) {
+            }
+            if (hasUserId) {
                 expression.put(":userId", new AttributeValue().withS(userId));
             }
             return expression;
@@ -111,16 +112,18 @@ public class ViewBookings implements
             List<String> expressions = new ArrayList<>();
             if(hasBookingNumber) expressions.add("BookingNumber = :bookingNumber");
             if(hasUserId) expressions.add("UserId = :userId");
-
             StringBuilder query = new StringBuilder();
-            if (expressions.size() > 1) {
-                for (int i =0; i < expressions.size(); i++) {
-                    if (i % 2 == 0) {
-                        query.append(expressions.get(0)).append(" ");
-                    } else {
-                        query.append(expressions.get(0)).append(" AND ");
-                    }
+            int noOfConditions = expressions.size();
+            if (noOfConditions > 1) {
+                for (int i = 0; i <= noOfConditions -2; i++) {
+                    query.append(expressions.get(i));
+                    query.append(AND);
                 }
+                query.append(expressions.get(noOfConditions - 1));
+            }
+            else
+            {
+                query.append(expressions.get(0));
             }
             System.out.println("The query is " + query);
             return query.toString();
@@ -131,14 +134,9 @@ public class ViewBookings implements
     @Getter
     @Setter
     @ToString
+    @AllArgsConstructor
     public static class ViewBookingsResponse {
-        private String bookingNumber;
-        private String userId;
-        private RoomType roomType;
-        private Calendar checkIn;
-        private Calendar checkOut;
-        private Calendar bookingDate;
-        private float amountPaid;
-        private Status status;
+        private boolean success;
+        private List<RoomBooking> bookings;
     }
 }

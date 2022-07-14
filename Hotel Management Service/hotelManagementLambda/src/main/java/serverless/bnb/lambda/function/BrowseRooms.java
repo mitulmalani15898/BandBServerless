@@ -101,7 +101,6 @@ public class BrowseRooms implements
         response.setBody(responseBody);
         response.setStatusCode(statusCode);
         Map<String, String> headers = new HashMap<>();
-        headers.put("X-Custom-Header", "Response: Browse Rooms");
         headers.put("Content-Type", contentType);
         headers.put("Access-Control-Allow-Origin", "*");
         response.setHeaders(headers);

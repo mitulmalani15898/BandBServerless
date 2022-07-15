@@ -2,9 +2,7 @@ package serverless.bnb.lambda.model;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Calendar;
 
@@ -12,6 +10,8 @@ import java.util.Calendar;
 @Setter
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class InvoiceLine {
 
     public static final String INVOICE_LINE_ROOM = "Room";

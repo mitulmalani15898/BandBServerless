@@ -16,6 +16,8 @@ const cookieMeta = {
 const AuthContext = createContext();
 
 const AuthProvider = (props) => {
+  const [currentUser, setCurrentUser] = useState(null);
+
   const getUserPool = () => {
     const poolData = {
       UserPoolId: USER_POOL_ID,
@@ -70,9 +72,15 @@ const AuthProvider = (props) => {
 
       user.authenticateUser(authDetails, {
         onSuccess: (data) => {
-          Cookies.set("accessToken", data.accessToken.jwtToken, cookieMeta);
-          Cookies.set("idToken", data.idToken.jwtToken, cookieMeta);
-          Cookies.set("refreshToken", data.refreshToken.token, cookieMeta);
+          setCurrentUser({
+            userId: data.idToken.payload["custom:userId"],
+            email: data.idToken.payload.email,
+            firstName: data.idToken.payload.name,
+            lastName: data.idToken.payload.family_name,
+          });
+          // Cookies.set("accessToken", data.accessToken.jwtToken, cookieMeta);
+          // Cookies.set("idToken", data.idToken.jwtToken, cookieMeta);
+          // Cookies.set("refreshToken", data.refreshToken.token, cookieMeta);
           resolve(data);
         },
         onFailure: (err) => {
@@ -104,6 +112,8 @@ const AuthProvider = (props) => {
   return (
     <AuthContext.Provider
       value={{
+        currentUser,
+        setCurrentUser,
         authenticate,
         getSession,
         logout,

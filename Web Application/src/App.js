@@ -12,7 +12,11 @@ const PrivateRoute = ({ children }) => {
 };
 
 const PublicRoute = ({ children }) => {
-  return isLoggedIn() ? <Navigate to="/" replace={true} /> : children;
+  return isLoggedIn() ? (
+    <Navigate to="/preferences" replace={true} />
+  ) : (
+    children
+  );
 };
 
 const App = () => {
@@ -24,7 +28,7 @@ const App = () => {
           path="/"
           element={
             <PublicRoute>
-              <><Rooms /></>
+              <Rooms />
             </PublicRoute>
           }
         />
@@ -76,9 +80,9 @@ const App = () => {
             </PublicRoute>
           }
         />
-           
+
         <Route exact path="/user/bookings" element={<UserRoomBookings />} />
-        <Route exact path="*" element={<div>404, Page Not Found!</div>} />        
+        <Route exact path="*" element={<div>404, Page Not Found!</div>} />
       </Routes>
     </div>
   );

@@ -42,7 +42,7 @@
     </dependencies>
 
     <build>
-        <finalName>hotelMgmtLambda</finalName>
+        <finalName>saveFeedback</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -64,4 +64,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

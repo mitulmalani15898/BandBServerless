@@ -39,7 +39,13 @@ public class CancelBooking implements
                 RoomBooking booking = getBooking(request.getUserId(), request.getBookingNumber());
                 if (Objects.isNull(booking)) {
                     response =  getAPIGatewayResponse(400, "Booking does not exists");
-                } else {
+                } else if (booking.getStatus().equals(Status.CANCELLED)) {
+                    response =  getAPIGatewayResponse(200, "This booking is cancelled");
+                }
+                else if (booking.getCheckIn().before(Calendar.getInstance())) {
+                    response =  getAPIGatewayResponse(200, "Cannot cancel the booking after check in time");
+                }
+                else {
                     cancelBooking(booking);
                     System.out.println("Booking cancelled : " + booking.toString());
                     response = getAPIGatewayResponse(200, "Booking cancelled successfully");
@@ -58,7 +64,7 @@ public class CancelBooking implements
         return response;
     }
 
-    RoomBooking getBooking(String userId, String bookingNumber) {
+    private RoomBooking getBooking(String userId, String bookingNumber) {
         Map<String, AttributeValue> roomBookingAttrVal = new HashMap<>();
         roomBookingAttrVal.put(":userId", new AttributeValue().withS(userId));
         roomBookingAttrVal.put(":bookingNumber", new AttributeValue().withS(bookingNumber));
@@ -69,17 +75,16 @@ public class CancelBooking implements
         return Optional.ofNullable(roomBookings).isPresent() && roomBookings.size() > 0 ? roomBookings.get(0) : null;
     }
 
-    void cancelBooking(RoomBooking booking) {
+    private void cancelBooking(RoomBooking booking) {
         booking.setStatus(Status.CANCELLED);
         DynamoDB.getMapper().save(booking);
     }
 
-    public APIGatewayProxyResponseEvent getAPIGatewayResponse(int statusCode, String responseBody) {
+    private APIGatewayProxyResponseEvent getAPIGatewayResponse(int statusCode, String responseBody) {
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
         response.setBody(responseBody);
         response.setStatusCode(statusCode);
         Map<String, String> headers = new HashMap<>();
-        headers.put("X-Custom-Header", "Response: Browse Rooms");
         headers.put("Content-Type", "text/plain");
         headers.put("Access-Control-Allow-Origin", "*");
         response.setHeaders(headers);

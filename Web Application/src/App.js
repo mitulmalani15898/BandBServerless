@@ -1,5 +1,6 @@
+import Rooms from "./hotel/Rooms";
+import UserRoomBookings from "./hotel/UserRoomBookings";
 import { Routes, Route, Navigate } from "react-router-dom";
-
 import Preferences from "./Recommendations/Preferences";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
@@ -22,9 +23,9 @@ const App = () => {
           exact
           path="/"
           element={
-            <PrivateRoute>
-              <></>
-            </PrivateRoute>
+            <PublicRoute>
+              <><Rooms /></>
+            </PublicRoute>
           }
         />
         <Route path="/preferences" element={<Preferences />} />
@@ -55,7 +56,29 @@ const App = () => {
             </PublicRoute>
           }
         />
-        <Route path="*" element={<div>404, Page Not Found!</div>} />
+
+        <Route
+          exact
+          path="/rooms"
+          element={
+            <PublicRoute>
+              <Rooms />
+            </PublicRoute>
+          }
+        />
+
+        <Route
+          exact
+          path="/user/bookings"
+          element={
+            <PublicRoute>
+              <UserRoomBookings />
+            </PublicRoute>
+          }
+        />
+           
+        <Route exact path="/user/bookings" element={<UserRoomBookings />} />
+        <Route exact path="*" element={<div>404, Page Not Found!</div>} />        
       </Routes>
     </div>
   );

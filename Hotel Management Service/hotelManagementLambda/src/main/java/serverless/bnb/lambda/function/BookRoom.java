@@ -11,10 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.*;
 import serverless.bnb.lambda.DynamoDB;
-import serverless.bnb.lambda.model.Room;
-import serverless.bnb.lambda.model.RoomBooking;
-import serverless.bnb.lambda.model.RoomType;
-import serverless.bnb.lambda.model.Status;
+import serverless.bnb.lambda.model.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,28 +22,33 @@ public class BookRoom implements
         RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent>  {
 
     @Override
-    public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent requestEvent, Context context) {
-        Map<String, String> queryParams = requestEvent.getHeaders();
+    public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent request, Context context) {
+        Map<String, String> queryParams = request.getHeaders();
         String contentType = queryParams.get("Content-Type");
         APIGatewayProxyResponseEvent response;
 
         if (!contentType.isEmpty() && !contentType.contains("application/json")) {
+            System.out.println("Bad request for room booking, Invalid content type");
             return getAPIGatewayResponse(400, "Invalid content type", "text/plain");
         }
 
         try {
-            String requestBody = requestEvent.getBody();
+            String requestBody = request.getBody();
             BookRoomInput input = new ObjectMapper().readValue(requestBody, BookRoomInput.class);
             if (!input.isValid()) {
+                System.out.println("Bad request for room booking, invalid booking");
                 return getAPIGatewayResponse(400, "Invalid input", "text/plain");
             }
-            else {
+            else
+            {
                 if (isAvailable(input)) {
-                    createBooking(input);
+                    RoomBooking bookedRoom = createBooking(input);
                     response = getAPIGatewayResponse(200, "Booking created successfully", "text/plain");
-                } else {
+                }
+                else {
                     response = getAPIGatewayResponse(200,
-                            "The request room is not available for date " + input.getCheckIn(),
+                            "The request room is not available for dates "
+                                    + input.getCheckIn() + " to " + input.getCheckOut(),
                             "text/plain");
                 }
             }
@@ -55,7 +57,7 @@ public class BookRoom implements
             System.err.println("An exception occurred while processing the request :" + e.getMessage());
             e.printStackTrace();
             response = getAPIGatewayResponse(500,
-                    "An error occurred while processing the request", "text/plain");
+                    "An error occurred while booking the room", "text/plain");
         }
         return response;
     }
@@ -91,7 +93,7 @@ public class BookRoom implements
         return isAvailable;
     }
 
-    public void createBooking(BookRoomInput input) throws ParseException {
+    public RoomBooking createBooking(BookRoomInput input) throws ParseException {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
         Date checkInDate = dateFormatter.parse(input.getCheckIn());
@@ -104,6 +106,12 @@ public class BookRoom implements
         Calendar checkOut = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         checkOut.setTime(checkOutDate);
 
+        InvoiceLine roomInvoice = InvoiceLine.builder()
+                .type(InvoiceLine.INVOICE_LINE_ROOM)
+                .amount(Float.parseFloat(input.amountPaid))
+                .description(input.getRoomType())
+                .build();
+
         RoomBooking newBooking = RoomBooking.builder()
                 .userId(input.userId)
                 .roomType(RoomType.getRoomType(input.getRoomType()))
@@ -112,10 +120,13 @@ public class BookRoom implements
                 .bookingDate(Calendar.getInstance())
                 .amountPaid(Float.parseFloat(input.amountPaid))
                 .status(Status.VALID)
+                .invoiceLines(Arrays.asList(roomInvoice))
                 .build();
+
         newBooking.generateBookingNumber();
         DynamoDBMapper mapper = DynamoDB.getMapper();
         mapper.save(newBooking);
+        return newBooking;
     }
 
     APIGatewayProxyResponseEvent getAPIGatewayResponse(int statusCode, String responseBody, String contentType) {
@@ -123,7 +134,6 @@ public class BookRoom implements
         response.setBody(responseBody);
         response.setStatusCode(statusCode);
         Map<String, String> headers = new HashMap<>();
-        headers.put("X-Custom-Header", "Response: Browse Rooms");
         headers.put("Content-Type", contentType);
         headers.put("Access-Control-Allow-Origin", "*");
         response.setHeaders(headers);

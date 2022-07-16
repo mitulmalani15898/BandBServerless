@@ -12,6 +12,10 @@ code {
     monospace;
 }
 
+.alert {
+  padding: 0.5rem;
+}
+
 /* width */
 ::-webkit-scrollbar {
   width: 4px;

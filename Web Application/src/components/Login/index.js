@@ -6,6 +6,8 @@ import { Form, FormGroup, Input, Button, Alert } from "reactstrap";
 import { AuthContext } from "../../providers/AuthProvider";
 import AuthWrapper from "../AuthWrapper";
 import { AUTH_LAMBDA_URL } from "../../utility/constants";
+import SecurityQnA from "../SecurityQnA";
+import CeasarCipher from "../CeasarCipher";
 
 const Login = () => {
   const { currentUser, setCurrentUser, authenticate } = useContext(AuthContext);
@@ -16,6 +18,7 @@ const Login = () => {
   });
   const [errorMessage, setErrorMessage] = useState("");
 
+  // get user's security question answer
   const getSecurityQnA = async (data) => {
     return await new Promise(async (resolve, reject) => {
       try {
@@ -48,7 +51,6 @@ const Login = () => {
 
     authenticate(email, password)
       .then(async (data) => {
-        console.log("data", data);
         if (data) {
           try {
             const res = await getSecurityQnA({
@@ -72,43 +74,48 @@ const Login = () => {
       .catch((err) => setErrorMessage(err.message || JSON.stringify(err)));
   };
 
-  console.log("currentUser", currentUser);
   const { email, password } = loginDetails;
 
-  return (
-    <AuthWrapper title="Sign in">
-      <Form className="auth-form" onSubmit={handleLoginClick}>
-        {errorMessage && <Alert color="danger">{errorMessage}</Alert>}
-        <FormGroup>
-          <Input
-            id="email"
-            name="email"
-            placeholder="Email address"
-            type="email"
-            value={email}
-            onChange={handleChange}
-          />
-        </FormGroup>
-        <FormGroup>
-          <Input
-            id="password"
-            name="password"
-            placeholder="Password"
-            type="password"
-            value={password}
-            onChange={handleChange}
-          />
-        </FormGroup>
-        <Button color="primary" type="submit" className="auth-button">
-          Sign in
-        </Button>
-        <div className="auth-link-wrapper">
-          <Link to="/forgot-password">Forgot password?</Link>
-          <Link to="/signup">Don't have an account? Sign Up</Link>
-        </div>
-      </Form>
-    </AuthWrapper>
-  );
+  if (!!currentUser?.userQnAVerified) {
+    return <CeasarCipher />;
+  } else if (!!currentUser?.question) {
+    return <SecurityQnA />;
+  } else {
+    return (
+      <AuthWrapper title="Sign in">
+        <Form className="auth-form" onSubmit={handleLoginClick}>
+          {errorMessage && <Alert color="danger">{errorMessage}</Alert>}
+          <FormGroup>
+            <Input
+              id="email"
+              name="email"
+              placeholder="Email address"
+              type="email"
+              value={email}
+              onChange={handleChange}
+            />
+          </FormGroup>
+          <FormGroup>
+            <Input
+              id="password"
+              name="password"
+              placeholder="Password"
+              type="password"
+              value={password}
+              onChange={handleChange}
+            />
+          </FormGroup>
+          <Button color="primary" type="submit" className="auth-button">
+            Sign in
+          </Button>
+          <div className="auth-link-wrapper">
+            <Link to="/forgot-password">Forgot password?</Link>
+            <Link to="/signup">Don't have an account? Sign Up</Link>
+          </div>
+        </Form>
+      </AuthWrapper>
+    );
+  }
 };
 
 export default Login;

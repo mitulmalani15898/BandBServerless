@@ -29,6 +29,7 @@ const Signup = () => {
     };
   }, []);
 
+  // save user's security question answer
   const postSecurityQnA = async (data) => {
     return await new Promise(async (resolve, reject) => {
       try {
@@ -94,7 +95,7 @@ const Signup = () => {
         type: "save",
         userId,
         securityQuestion,
-        securityAnswer,
+        securityAnswer: securityAnswer.toLowerCase(),
         ceasarKey,
       });
       if (res.status === 201) {

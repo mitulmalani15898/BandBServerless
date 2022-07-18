@@ -6,6 +6,8 @@ import Preferences from "./Recommendations/Preferences";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import ForgotPassword from "./components/ForgotPassword";
+import Visualization from "./components/Visualization/Visualization";
+import Report from "./components/Visualization/Report";
 
 const App = () => {
   return (
@@ -18,6 +20,8 @@ const App = () => {
         <Route exact path="/rooms" element={<Rooms />} />
         <Route exact path="/user/bookings" element={<UserRoomBookings />} />
         <Route exact path="/preferences" element={<Preferences />} />
+        <Route exact path="/visualization" element={<Visualization />} />
+        <Route exact path="/report" element={<Report />} />
         <Route exact path="*" element={<div>404, Page Not Found!</div>} />
       </Routes>
     </div>

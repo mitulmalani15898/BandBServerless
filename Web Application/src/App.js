@@ -5,6 +5,8 @@ import Preferences from "./Recommendations/Preferences";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import ForgotPassword from "./components/ForgotPassword";
+import Visualization from "./components/Visualization/Visualization";
+import Report from "./components/Visualization/Report";
 import { isLoggedIn } from "./utility/common";
 
 const PrivateRoute = ({ children }) => {
@@ -82,6 +84,8 @@ const App = () => {
         />
 
         <Route exact path="/user/bookings" element={<UserRoomBookings />} />
+        <Route path={"/visualization"} element={<Visualization />} />
+        <Route path={"/report"} element={<Report />} />
         <Route exact path="*" element={<div>404, Page Not Found!</div>} />
       </Routes>
     </div>

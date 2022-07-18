@@ -19,7 +19,7 @@ const ForgotPassword = () => {
             type="email"
           />
         </FormGroup>
-        <Button color="primary" type="submit" className="auth-button">
+        <Button color="dark" type="submit" className="auth-button">
           Send Verification Code
         </Button>
         <div className="auth-link-wrapper">

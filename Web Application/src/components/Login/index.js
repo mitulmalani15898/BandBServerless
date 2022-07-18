@@ -8,7 +8,7 @@ import AuthWrapper from "../AuthWrapper";
 import { AUTH_LAMBDA_URL } from "../../utility/constants";
 import SecurityQnA from "../SecurityQnA";
 import CeasarCipher from "../CeasarCipher";
-import { generateRandomLenthString } from "../../utility/common";
+import { generateRandomLengthString } from "../../utility/common";
 
 const Login = () => {
   const { currentUser, setCurrentUser, authenticate } = useContext(AuthContext);
@@ -78,7 +78,7 @@ const Login = () => {
   const { email, password } = loginDetails;
 
   if (!!currentUser?.userQnAVerified) {
-    return <CeasarCipher plainText={generateRandomLenthString()} />;
+    return <CeasarCipher plainText={generateRandomLengthString()} />;
   } else if (!!currentUser?.question) {
     return <SecurityQnA />;
   } else {
@@ -106,11 +106,12 @@ const Login = () => {
               onChange={handleChange}
             />
           </FormGroup>
-          <Button color="primary" type="submit" className="auth-button">
+          <Button color="dark" type="submit" className="auth-button">
             Sign in
           </Button>
           <div className="auth-link-wrapper">
-            <Link to="/forgot-password">Forgot password?</Link>
+            {/* <Link to="/forgot-password">Forgot password?</Link> */}
+            <span></span>
             <Link to="/signup">Don't have an account? Sign Up</Link>
           </div>
         </Form>

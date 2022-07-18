@@ -61,7 +61,7 @@ const SecurityQnA = () => {
             onChange={handleAnswerChange}
           />
         </FormGroup>
-        <Button color="primary" type="submit" className="auth-button">
+        <Button color="dark" type="submit" className="auth-button">
           Verify
         </Button>
       </Form>

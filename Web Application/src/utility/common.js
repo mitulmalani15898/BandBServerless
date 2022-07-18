@@ -19,7 +19,7 @@ export const generateCeasarCipherKey = (min = 1, max = 26) => {
 /**
  * https://www.w3resource.com/javascript-exercises/javascript-function-exercise-20.php
  */
-export const generateRandomLenthString = (l = 4) => {
+export const generateRandomLengthString = (l = 4) => {
   let text = "";
   const charSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 

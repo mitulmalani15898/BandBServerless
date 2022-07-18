@@ -1,6 +1,5 @@
 import { createContext, useState } from "react";
 import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";
 import {
   CognitoUser,
   AuthenticationDetails,
@@ -16,8 +15,6 @@ import {
 const AuthContext = createContext();
 
 const AuthProvider = (props) => {
-  const navigate = useNavigate();
-
   const [currentUser, setCurrentUser] = useState(null);
 
   const getUserPool = () => {

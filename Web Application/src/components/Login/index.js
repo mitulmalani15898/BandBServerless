@@ -8,6 +8,7 @@ import AuthWrapper from "../AuthWrapper";
 import { AUTH_LAMBDA_URL } from "../../utility/constants";
 import SecurityQnA from "../SecurityQnA";
 import CeasarCipher from "../CeasarCipher";
+import { generateRandomLenthString } from "../../utility/common";
 
 const Login = () => {
   const { currentUser, setCurrentUser, authenticate } = useContext(AuthContext);
@@ -77,7 +78,7 @@ const Login = () => {
   const { email, password } = loginDetails;
 
   if (!!currentUser?.userQnAVerified) {
-    return <CeasarCipher />;
+    return <CeasarCipher plainText={generateRandomLenthString()} />;
   } else if (!!currentUser?.question) {
     return <SecurityQnA />;
   } else {

@@ -1,21 +1,23 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 import Cookies from "js-cookie";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import {
   CognitoUser,
   AuthenticationDetails,
   CognitoUserPool,
 } from "amazon-cognito-identity-js";
 
-import { USER_POOL_CLIENT_ID, USER_POOL_ID } from "../../utility/constants";
-
-const cookieMeta = {
-  path: "",
-};
+import {
+  cookieMeta,
+  USER_POOL_CLIENT_ID,
+  USER_POOL_ID,
+} from "../../utility/constants";
 
 const AuthContext = createContext();
 
 const AuthProvider = (props) => {
+  const navigate = useNavigate();
+
   const [currentUser, setCurrentUser] = useState(null);
 
   const getUserPool = () => {
@@ -77,10 +79,10 @@ const AuthProvider = (props) => {
             email: data.idToken.payload.email,
             firstName: data.idToken.payload.name,
             lastName: data.idToken.payload.family_name,
+            accessToken: data.accessToken.jwtToken,
+            idToken: data.idToken.jwtToken,
+            refreshToken: data.refreshToken.token,
           });
-          // Cookies.set("accessToken", data.accessToken.jwtToken, cookieMeta);
-          // Cookies.set("idToken", data.idToken.jwtToken, cookieMeta);
-          // Cookies.set("refreshToken", data.refreshToken.token, cookieMeta);
           resolve(data);
         },
         onFailure: (err) => {
@@ -99,6 +101,7 @@ const AuthProvider = (props) => {
     const user = Pool.getCurrentUser();
     if (user) {
       removeCookies();
+      setCurrentUser(null);
       user.signOut();
     }
   };

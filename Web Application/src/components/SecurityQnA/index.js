@@ -48,12 +48,15 @@ const SecurityQnA = () => {
     <AuthWrapper title="Security Question and Answer">
       <Form className="auth-form" onSubmit={handleSecurityQnAClick}>
         {errorMessage && <Alert color="danger">{errorMessage}</Alert>}
-        <div className="my-2">{question}</div>
+        <div className="my-2">
+          <b>{question}</b>
+        </div>
         <FormGroup>
           <Input
             id="answer"
             name="answer"
-            type="text"
+            type="password"
+            placeholder="Your security answer"
             value={userAnswer}
             onChange={handleAnswerChange}
           />

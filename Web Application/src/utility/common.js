@@ -15,3 +15,17 @@ export const generateCeasarCipherKey = (min = 1, max = 26) => {
   // The maximum is inclusive and the minimum is inclusive
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
+
+/**
+ * https://www.w3resource.com/javascript-exercises/javascript-function-exercise-20.php
+ */
+export const generateRandomLengthString = (l = 4) => {
+  let text = "";
+  const charSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+  for (let i = 0; i < l; i++) {
+    const randomIndex = Math.floor(Math.random() * charSet.length);
+    text += charSet.charAt(randomIndex);
+  }
+  return text;
+};

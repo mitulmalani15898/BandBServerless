@@ -35,7 +35,7 @@ const ResetPassword = () => {
             type="password"
           />
         </FormGroup>
-        <Button color="primary" type="submit" className="auth-button">
+        <Button color="dark" type="submit" className="auth-button">
           Reset Password
         </Button>
         <div className="auth-link-wrapper">

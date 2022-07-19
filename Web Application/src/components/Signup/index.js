@@ -227,7 +227,7 @@ const Signup = () => {
               onChange={handleChange}
             />
           </FormGroup>
-          <Button color="primary" type="submit" className="auth-button">
+          <Button color="dark" type="submit" className="auth-button">
             Sign up
           </Button>
           <div className="auth-link-wrapper">

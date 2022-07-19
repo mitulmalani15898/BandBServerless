@@ -10,12 +10,13 @@ import ForgotPassword from "./components/ForgotPassword";
 import Visualization from "./components/Visualization/Visualization";
 import Report from "./components/Visualization/Report";
 import NavbarComponent from "./components/Navbar";
+import Footer from "./components/Footer/Footer";
 
 const App = () => {
     return (
         <>
             <NavbarComponent />
-            <div className="App">
+            <div className="App" style={{ paddingBottom: "50px" }}>
                 <Routes>
                     <Route exact path="/" element={<Rooms />} />
                     <Route exact path="/login" element={<Login />} />
@@ -46,6 +47,7 @@ const App = () => {
                     />
                 </Routes>
             </div>
+            <Footer />
         </>
     );
 };

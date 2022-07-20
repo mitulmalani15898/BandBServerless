@@ -39,9 +39,9 @@ const Preferences = () => {
             "," +
             preferences.activity +
             "," +
-            (preferences.interest.natural == false ? "1" : "") +
-            (preferences.interest.historical == true ? "2" : "") +
-            (preferences.interest.entertainment == true ? "3" : "") +
+            (preferences.interest.natural === false ? "1" : "") +
+            (preferences.interest.historical === true ? "2" : "") +
+            (preferences.interest.entertainment === true ? "3" : "") +
             "," +
             preferences.budget +
             "," +
@@ -52,15 +52,22 @@ const Preferences = () => {
         debugger;
         axios
             .post(
-                "https://q7f1k4nw83.execute-api.us-east-1.amazonaws.com/TourStage",
+                "https://mh990oc3p2.execute-api.us-east-1.amazonaws.com/test/user/tour",
                 // { userEmail: currentUser.email, data: req }
-                { userEmail: "dummy", data: req }
+                {
+                    email: "shiva@gmail.com",
+                    data: req,
+                    persons: preferences.persons,
+                    cost: preferences.budget,
+                }
             )
             .then((res) => {
-                if (res.status == 200)
+                debugger;
+                if (res.status === 200)
                     alert("Your request has been successfully submitted");
             })
             .catch((error) => {
+                debugger;
                 alert(error);
             });
     };

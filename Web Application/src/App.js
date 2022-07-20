@@ -11,6 +11,7 @@ import Visualization from "./components/Visualization/Visualization";
 import Report from "./components/Visualization/Report";
 import NavbarComponent from "./components/Navbar";
 import Footer from "./components/Footer/Footer";
+import Feedback from "./components/Feedback/Feedback";
 
 const App = () => {
     return (
@@ -34,6 +35,7 @@ const App = () => {
                     />
                     <Route path="/preferences" element={<Preferences />} />
                     <Route path="/pass" element={<Pass />} />
+                    <Route path="/feedback" element={<Feedback />} />
                     <Route
                         exact
                         path="/visualization"

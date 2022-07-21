@@ -27,15 +27,13 @@ const App = () => {
                         path="/forgot-password"
                         element={<ForgotPassword />}
                     />
+
                     <Route exact path="/rooms" element={<Rooms />} />
-                    <Route
-                        exact
-                        path="/user/bookings"
-                        element={<UserRoomBookings />}
-                    />
+                    <Route exact path="/user/bookings" element={<UserRoomBookings />}/>
+                    <Route path="/user/bookings/feedback/:bookingNumber" element={<Feedback />} />
+                    
                     <Route path="/preferences" element={<Preferences />} />
                     <Route path="/pass" element={<Pass />} />
-                    <Route path="/feedback" element={<Feedback />} />
                     <Route
                         exact
                         path="/visualization"

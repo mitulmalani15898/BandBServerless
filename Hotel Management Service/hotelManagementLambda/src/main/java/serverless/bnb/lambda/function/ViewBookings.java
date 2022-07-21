@@ -32,7 +32,7 @@ public class ViewBookings implements
                 List<RoomBooking> bookings = fetchBookings(searchCriteria);
                 if (Optional.ofNullable(bookings).isEmpty() || bookings.size() == 0) {
                     String plainTextResponse = "No bookings found";
-                    response = getAPIGatewayResponse(200, plainTextResponse, "text/plain");
+                    response = getAPIGatewayResponse(404, plainTextResponse, "text/plain");
                 }
                 else
                 {

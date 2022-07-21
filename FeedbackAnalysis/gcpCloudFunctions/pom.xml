@@ -19,18 +19,20 @@
       <version>1.0.1</version>
       <type>jar</type>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+
     <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-      <version>2.8.9</version>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-language</artifactId>
+      <version>2.2.0</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/software.amazon.awssdk/dynamodb -->
+
     <dependency>
-      <groupId>software.amazon.awssdk</groupId>
-      <artifactId>dynamodb</artifactId>
-      <version>2.17.229</version>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-pubsub</artifactId>
+      <version>1.120.0</version>
     </dependency>
+
+
   </dependencies>
 
   <!-- Required for Java 11 functions in the inline editor -->

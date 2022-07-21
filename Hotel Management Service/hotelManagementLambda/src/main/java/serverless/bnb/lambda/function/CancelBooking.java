@@ -25,7 +25,7 @@ public class CancelBooking implements
     public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent requestEvent, Context context) {
 
         Map<String, String> queryParams = requestEvent.getHeaders();
-        String contentType = queryParams.get("Content-Type");
+        String contentType = queryParams.get("content-type");
         APIGatewayProxyResponseEvent response;
 
         if (!contentType.isEmpty() && !contentType.contains("application/json")) {

@@ -19,11 +19,11 @@ export const generateCeasarCipherKey = (min = 1, max = 26) => {
 /**
  * https://www.w3resource.com/javascript-exercises/javascript-function-exercise-20.php
  */
-export const generateRandomLengthString = (l = 4) => {
+export const generateRandomLengthString = (len = 4) => {
   let text = "";
   const charSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-  for (let i = 0; i < l; i++) {
+  for (let i = 0; i < len; i++) {
     const randomIndex = Math.floor(Math.random() * charSet.length);
     text += charSet.charAt(randomIndex);
   }

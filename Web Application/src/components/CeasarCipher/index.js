@@ -33,9 +33,9 @@ const CeasarCipher = ({ plainText }) => {
         ceasarKey: currentUser.ceasarKey,
       });
       if (res.status === 200) {
-        Cookies.set("accessToken", currentUser.jwtToken, cookieMeta);
-        Cookies.set("idToken", currentUser.jwtToken, cookieMeta);
-        Cookies.set("refreshToken", currentUser.token, cookieMeta);
+        Cookies.set("accessToken", currentUser.accessToken, cookieMeta);
+        Cookies.set("idToken", currentUser.idToken, cookieMeta);
+        Cookies.set("refreshToken", currentUser.refreshToken, cookieMeta);
         navigate("/rooms", { replace: true });
       }
     } catch (err) {

@@ -68,7 +68,7 @@ const Signup = () => {
     }
     setErrorMessage("");
 
-    const userId = `${firstName}_${lastName}_${new Date().toISOString()}`;
+    const userId = `${firstName}_${lastName}_${new Date().valueOf()}`;
     const ceasarKey = generateCeasarCipherKey();
 
     const attributeList = [
@@ -227,7 +227,7 @@ const Signup = () => {
               onChange={handleChange}
             />
           </FormGroup>
-          <Button color="primary" type="submit" className="auth-button">
+          <Button color="dark" type="submit" className="auth-button">
             Sign up
           </Button>
           <div className="auth-link-wrapper">

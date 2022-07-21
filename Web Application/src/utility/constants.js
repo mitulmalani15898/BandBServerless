@@ -5,6 +5,9 @@ export const USER_POOL_CLIENT_ID = "2k1t2rs0pojc7bp1886jrjhii7";
 export const AUTH_LAMBDA_URL =
   "https://j6pbadirbtvqoqyrlqkhzecayy0mlkzb.lambda-url.us-east-1.on.aws/";
 
+export const CEASAR_CIPHER_URL =
+  "https://us-east1-csci-5410-firestore.cloudfunctions.net/ceasarCipher";
+
 export const securityQuestions = [
   "What was your childhood nickname?",
   "In what city did you meet your spouse/significant other?",
@@ -13,3 +16,7 @@ export const securityQuestions = [
   "What is the name of your favorite childhood friend?",
   "Where were you when you first heard about 9/11?",
 ];
+
+export const cookieMeta = {
+  path: "",
+};

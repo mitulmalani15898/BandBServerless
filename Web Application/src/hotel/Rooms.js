@@ -3,6 +3,7 @@ import { Col, Container, Row, Button } from "react-bootstrap";
 import Axios from 'axios';
 import moment from 'moment';
 import RoomType from './RoomType';
+import * as HotelMgmtConstants from './HotelMgmtConstants';
 
 export default function Rooms () {
 
@@ -26,7 +27,8 @@ export default function Rooms () {
             return;
         }
         
-        const getRoomsUri = `https://ymma83ympk.execute-api.us-east-1.amazonaws.com/prod/hotel/rooms?checkIn=${checkIn}&checkOut=${checkOut}`;
+        const getRoomsUri = HotelMgmtConstants.apiBaseUrl + `/hotel/rooms?checkIn=${checkIn}&checkOut=${checkOut}`;
+        console.log("The URL is " + getRoomsUri);
         Axios.get(getRoomsUri)
             .then((response) => {
                 console.log(response)

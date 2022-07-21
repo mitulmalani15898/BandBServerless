@@ -4,7 +4,9 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.core.ApiFuture;
 import com.google.api.gax.core.FixedCredentialsProvider;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.pubsub.v1.Publisher;
@@ -32,7 +34,7 @@ public class CaptureFeedback implements
     @Override
     public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent requestEvent, Context context) {
         Map<String, String> queryParams = requestEvent.getHeaders();
-        String contentType = queryParams.get("Content-Type");
+        String contentType = queryParams.get("content-type");
         APIGatewayProxyResponseEvent response;
 
         if (!contentType.isEmpty() && !contentType.contains("application/json")) {
@@ -41,16 +43,22 @@ public class CaptureFeedback implements
         try {
             String jsonRequest = requestEvent.getBody();
             RequestBody requestBody = new ObjectMapper().readValue(jsonRequest, RequestBody.class);
-            Feedback feedback = Feedback.builder()
-                                        .userId(requestBody.getUserId())
-                                        .header(requestBody.getHeader())
-                                        .body(requestBody.getBody())
-                                        .bookingNumber(requestBody.getBookingNumber())
-                                        .build();
-            DynamoDB.getMapper().save(feedback);
-            System.out.println("Feedback saved :" + feedback);
-            publishFeedback(feedback);
-            response = getAPIGatewayResponse(200, "Feedback saved successfully", "text/plain");
+            if (requestBody.isValid()) {
+                Feedback feedback = Feedback.builder()
+                        .userId(requestBody.getUserId())
+                        .header(requestBody.getHeader())
+                        .body(requestBody.getBody())
+                        .bookingNumber(requestBody.getBookingNumber())
+                        .build();
+                DynamoDB.getMapper().save(feedback);
+                System.out.println("Feedback saved :" + feedback);
+                publishFeedback(feedback);
+                response = getAPIGatewayResponse(201, "Feedback saved successfully", "text/plain");
+            }
+            else
+            {
+                response = getAPIGatewayResponse(400, "Missing required fields", "text/plain");
+            }
         }
         catch (Exception exception) {
             System.err.println("An exception occurred while processing the request :" + exception.getMessage());
@@ -83,7 +91,7 @@ public class CaptureFeedback implements
         PubsubMessage pubMessage = PubsubMessage.newBuilder()
                                         .setData(ByteString.copyFrom(jsonMessage.getBytes(StandardCharsets.UTF_8)))
                                         .build();
-         sentimentAnalysisPublisher.publish(pubMessage).get();
+        sentimentAnalysisPublisher.publish(pubMessage).get();
     }
 
     APIGatewayProxyResponseEvent getAPIGatewayResponse(int statusCode, String responseBody, String contentType) {
@@ -93,6 +101,7 @@ public class CaptureFeedback implements
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", contentType);
         headers.put("Access-Control-Allow-Origin", "*");
+        headers.put("Access-Control-Allow-Credentials", "true");
         response.setHeaders(headers);
         return response;
     }
@@ -105,6 +114,19 @@ public class CaptureFeedback implements
         private String header;
         private String body;
         private String bookingNumber;
+
+        @JsonIgnore
+        private boolean isValid()
+        {
+            boolean isValid = true;
+            if (Objects.isNull(userId) || userId.isBlank()
+                || Objects.isNull(header) || header.isBlank()
+                || Objects.isNull(body) || body.isBlank()
+                || Objects.isNull(bookingNumber) || bookingNumber.isBlank()) {
+                isValid = false;
+            }
+            return  isValid;
+        }
     }
 
     @Getter

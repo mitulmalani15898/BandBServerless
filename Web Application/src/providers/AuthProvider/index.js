@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import {
   CognitoUser,
@@ -16,6 +16,27 @@ const AuthContext = createContext();
 
 const AuthProvider = (props) => {
   const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    getUserData();
+  }, []);
+
+  const getUserData = async () => {
+    try {
+      const res = await getSession();
+      setCurrentUser({
+        userId: res["custom:userId"],
+        email: res.email,
+        firstName: res.name,
+        lastName: res.family_name,
+        accessToken: res.accessToken.jwtToken,
+        idToken: res.idToken.jwtToken,
+        refreshToken: res.refreshToken.token,
+      });
+    } catch (err) {
+      console.log("getUserData", err);
+    }
+  };
 
   const getUserPool = () => {
     const poolData = {

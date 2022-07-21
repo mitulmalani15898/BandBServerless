@@ -1,20 +1,21 @@
 import "bootstrap/dist/css/bootstrap.css";
-import { useState } from "react";
-import { Navigate } from "react-router-dom";
+import { useState, useContext } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 import { isLoggedIn } from "./../utility/common";
+import { Stack, Button } from "@mui/material";
+import axios from "axios";
+import { AuthContext } from "../providers/AuthProvider";
 
 const Preferences = () => {
+    const { currentUser } = useContext(AuthContext);
+    const navigate = useNavigate();
     const [preferences, setPreferences] = useState({
-        stay: 0,
-        activity: {
-            outdoor: false,
-            indore: false,
-            aviation: false,
-            water: false,
-        },
-        interest: { natural: false, historical: false, entertainment: false },
-        budget: 0,
-        distance: 0,
+        stay: 1,
+        activity: 1,
+        interest: { natural: true, historical: false, entertainment: false },
+        budget: 1,
+        distance: 1,
+        persons: 1,
     });
 
     const handleChange = ({ currentTarget: input }) => {
@@ -26,13 +27,94 @@ const Preferences = () => {
             let names = input.name.split(".");
             pref[names[0]][names[1]] = !pref[names[0]][names[1]];
         }
+        // console.log(pref);
         setPreferences(pref);
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        let req =
+            "" +
+            preferences.stay +
+            "," +
+            preferences.activity +
+            "," +
+            (preferences.interest.natural === false ? "1" : "") +
+            (preferences.interest.historical === true ? "2" : "") +
+            (preferences.interest.entertainment === true ? "3" : "") +
+            "," +
+            preferences.budget +
+            "," +
+            preferences.distance;
+        // console.log(req);
+        // 3,2,123,3,3
+        // duration,activity,interest,budget,distance
+        debugger;
+        axios
+            .post(
+                "https://mh990oc3p2.execute-api.us-east-1.amazonaws.com/test/user/tour",
+                // { userEmail: currentUser.email, data: req }
+                {
+                    email: "shiva@gmail.com",
+                    data: req,
+                    persons: preferences.persons,
+                    cost: preferences.budget,
+                }
+            )
+            .then((res) => {
+                debugger;
+                if (res.status === 200)
+                    alert("Your request has been successfully submitted");
+            })
+            .catch((error) => {
+                debugger;
+                alert(error);
+            });
     };
 
     return (
         // isLoggedIn() && (
         <div className="container">
-            <div className="row">
+            <div className="row d-flex justify-content-center">
+                <div
+                    className="bg-dark p-2 mt-5"
+                    style={{
+                        borderRadius: "15px",
+                    }}
+                >
+                    <h3
+                        style={{
+                            color: "white",
+                            textAlign: "center",
+                        }}
+                    >
+                        Fill your preferences here to get a tour recommendation
+                        and its passes
+                    </h3>
+                </div>
+            </div>
+            <div className="row d-flex justify-content-center">
+                <div className="col-3 p-3 text-end">
+                    <label htmlFor="persons" className="form-label p-3">
+                        Total no of People :
+                    </label>
+                </div>
+                <div className="col-5 p-3">
+                    <div className="p-3 px-2">
+                        <select
+                            name="persons"
+                            className="form-select"
+                            onChange={handleChange}
+                            value={preferences.persons}
+                        >
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3 or more</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div className="row d-flex justify-content-center">
                 <div className="col-3 p-3 text-end">
                     <label htmlFor="stay" className="form-label p-3">
                         Duration of Stay :
@@ -53,73 +135,28 @@ const Preferences = () => {
                     </div>
                 </div>
             </div>
-            <div className="row">
+            <div className="row d-flex justify-content-center">
                 <div className="col-3 p-3 text-end">
                     <label htmlFor="activityType" className="form-label p-3">
                         Activity Type :
                     </label>
                 </div>
                 <div className="col-5 p-3">
-                    <div id="activityType" className="p-3">
-                        <div className="form-check p-3 pt-1">
-                            <input
-                                className="form-check-input"
-                                type="checkbox"
-                                name="activity.outdoor"
-                                onChange={handleChange}
-                                checked={preferences.activity.outdoor}
-                            />
-                            <label
-                                className="form-check-label"
-                                htmlFor="flexCheckDefault"
-                            >
-                                Outdoor
-                            </label>
-                        </div>
-                        <div className="form-check p-3">
-                            <input
-                                className="form-check-input"
-                                type="checkbox"
-                                name="activity.indore"
-                                onChange={handleChange}
-                                checked={preferences.activity.indore}
-                            />
-                            <label
-                                className="form-check-label"
-                                htmlFor="flexCheckChecked"
-                            >
-                                Indore
-                            </label>
-                        </div>
-                        {/* <div className="form-check p-3">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                name="activity.aviation"
-                onChange={handleChange}
-                checked={preferences.activity.aviation}
-              />
-              <label className="form-check-label" htmlFor="flexCheckDefault">
-                Aviation
-              </label>
-            </div>
-            <div className="form-check p-3">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                name="activity.water"
-                onChange={handleChange}
-                checked={preferences.activity.water}
-              />
-              <label className="form-check-label" htmlFor="flexCheckChecked">
-                Water
-              </label>
-            </div> */}
+                    <div className="p-3 px-2">
+                        <select
+                            name="activity"
+                            className="form-select"
+                            onChange={handleChange}
+                            value={preferences.activity}
+                        >
+                            <option value="1">Outdoor</option>
+                            <option value="2">Indore</option>
+                        </select>
                     </div>
                 </div>
             </div>
 
-            <div className="row">
+            <div className="row d-flex justify-content-center">
                 <div className="col-3 p-3 text-end">
                     <label htmlFor="InterestType" className="form-label p-3">
                         Type of Interests :
@@ -173,7 +210,7 @@ const Preferences = () => {
                 </div>
             </div>
 
-            <div className="row">
+            <div className="row d-flex justify-content-center">
                 <div className="col-3 p-3 text-end">
                     <label htmlFor="budget" className="form-label p-3">
                         Budget Range :
@@ -193,7 +230,7 @@ const Preferences = () => {
                     </div>
                 </div>
             </div>
-            <div className="row">
+            <div className="row d-flex justify-content-center">
                 <div className="col-3 p-3 text-end">
                     <label htmlFor="distance" className="form-label p-3">
                         Distance Range :
@@ -212,6 +249,39 @@ const Preferences = () => {
                         </select>
                     </div>
                 </div>
+            </div>
+            <div
+                className="form-check-label d-flex justify-content-center mb-5"
+                style={{ paddingLeft: "25px", marginTop: "15px" }}
+            >
+                <Stack
+                    spacing={5}
+                    direction="row"
+                    sx={{ width: "fit-content" }}
+                >
+                    <Button
+                        sx={{
+                            backgroundColor: "black",
+                            color: "white",
+                        }}
+                        variant="contained"
+                        onClick={handleSubmit}
+                    >
+                        Submit
+                    </Button>
+                    <Button
+                        sx={{
+                            backgroundColor: "gray",
+                            color: "white",
+                        }}
+                        variant="contained"
+                        onClick={() => {
+                            navigate("/");
+                        }}
+                    >
+                        Cancel
+                    </Button>
+                </Stack>
             </div>
         </div>
         // ) || (!isLoggedIn() && <Navigate to="/" replace />)

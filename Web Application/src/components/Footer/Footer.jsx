@@ -18,7 +18,7 @@ const Footer = () => {
           className="text-center p-2 d-flex justify-content-center text-white"
           // style={{ backgroundCcolor: "rgba(0, 0, 0, 0.2)" }}
         >
-          <span style={{ marginRight: "5px" }}>© 2020 Copyright ::</span>
+          <span style={{ marginRight: "5px" }}>© 2022 Copyright : </span>
           <Link className="text-white" to="/">
             B&B Hotel
           </Link>

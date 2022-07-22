@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 
 import Rooms from "./hotel/Rooms";
 import UserRoomBookings from "./hotel/UserRoomBookings";
+import RoomBooking from "./hotel/RoomBooking";
 import Preferences from "./Recommendations/Preferences";
 import Pass from "./Recommendations/Pass";
 import Login from "./components/Login";
@@ -23,6 +24,7 @@ const App = () => {
           <Route exact path="/signup" element={<Signup />} />
 
           <Route exact path="/rooms" element={<Rooms />} />
+          <Route exact path="/rooms/book" element={<RoomBooking />} />
           <Route exact path="/user/bookings" element={<UserRoomBookings />}/>
           <Route path="/user/bookings/feedback/:bookingNumber" element={<Feedback />} />
           

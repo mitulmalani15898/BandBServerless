@@ -9,9 +9,8 @@ export default function Rooms () {
 
     const [checkIn, setCheckIn] = useState('');
     const [checkOut, setCheckOut] = useState('');
-    const [rooms, setRooms] = useState([]);
-    
-    const searchRooms = e => {  
+    const [rooms, setRooms] = useState([]);    
+    const searchRooms = () => {  
         console.log(checkIn);
         console.log(checkOut);
         let hasErrors = false;
@@ -76,7 +75,7 @@ export default function Rooms () {
                         />
                     </Col>
                     <Col md={1}>
-                        <Button variant="primary"
+                        <Button variant="dark"
                                 onClick={searchRooms}>
                             Search
                         </Button>
@@ -84,17 +83,17 @@ export default function Rooms () {
                 </Row>
                 <Row>
                     <h4>Available Rooms</h4>
+                    <span>*<i>Standard Check-in time is 10 AM and Checkout is 12 PM</i></span>
                     {rooms.map(room =>
                         <Col xs={12} md={12} key={room.id} style={{ margin: '0.5rem 0rem' }}>
-                            <RoomType 
-                                room={room}
-                            
-                                // onActionSuccess={fetchFundrasiers}
+                            <RoomType key={room.roomType}
+                                        room={room}                        
+                                        checkIn={checkIn}
+                                        checkOut={checkOut}
                             />
                         </Col>
                     )}
                 </Row>
-
             </Container>
         </div>
     );

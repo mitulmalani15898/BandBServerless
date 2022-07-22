@@ -6,23 +6,36 @@ import BookingDetailsCard from "./BookingDetailsCard";
 import * as HotelMgmtConstants from './HotelMgmtConstants';
 import { AuthContext } from "../providers/AuthProvider";
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function UserRoomBookings () {
 
     const [pastBookings, setPastBookings] = useState([]);
     const [upcomingBookings, setUpcomingBookings] = useState([]);
+    const navigate = useNavigate();
     const { currentUser } = useContext(AuthContext);
     console.log("Current user is " + currentUser)
 
     useEffect(() => {
-        // Get this from local storage
-        const userId = "Akanksha_Singh_2022-07-20T21:58:12.553Z";
+        var userId = '';
+        if (currentUser) {
+            userId = currentUser.userId;
+        }
+        else
+        {
+            alert("You are not logged-in, please login to proceed further");
+            navigate("/login");
+        }
+        console.log("User Id is :" + userId)
         const getBookingsUri = HotelMgmtConstants.apiBaseUrl + `/hotel/bookings?userId=${userId}`;
         Axios.get(getBookingsUri)
             .then((response) => {
                 console.log(response)
                 if (response.status === 200) {
                     processBookings(response.data.bookings);
+                }
+                else if (response.status === 404) {
+                    alert("You have no bookings")
                 }
             })
             .catch((error) => {
@@ -68,7 +81,8 @@ export default function UserRoomBookings () {
                         <BookingDetailsCard booking={booking} type="past" />)
                     }                    
                 </Tab>
-            </Tabs>            
+            </Tabs>      
+            <hr/>      
         </Container>
 
     );

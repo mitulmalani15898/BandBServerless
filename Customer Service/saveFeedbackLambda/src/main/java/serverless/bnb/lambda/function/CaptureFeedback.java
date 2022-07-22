@@ -25,6 +25,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * AWS Lambda function that receives customer's feedback from front-end
+ * Persists it in Dynamo DB
+ * Publishes the feedback to GCP Pub Sub Topic Feedback to perform perform sentiment analysis on the feedback
+ * */
 public class CaptureFeedback implements
         RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 

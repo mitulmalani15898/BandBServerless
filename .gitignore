@@ -1,3 +1,6 @@
+venv/
+layer/
+.idea/
 /.metadata/
 
 /Hotel Management Service/hotelManagementLambda/target/

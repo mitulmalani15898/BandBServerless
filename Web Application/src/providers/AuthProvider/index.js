@@ -34,7 +34,7 @@ const AuthProvider = (props) => {
         refreshToken: res.refreshToken.token,
       });
     } catch (err) {
-      console.log("getUserData", err);
+      console.log("getUserData: ", "user is not logged in.");
     }
   };
 

@@ -1,5 +1,7 @@
 const aws = require("aws-sdk");
 
+const TableName = "users";
+
 exports.handler = async (event) => {
   if (event.body === null || event.body === undefined) {
     const response = {
@@ -12,10 +14,9 @@ exports.handler = async (event) => {
 
   // Set the region
   aws.config.update({ region: "us-east-1" });
-  const ddb = new aws.DynamoDB({ apiVersion: "2012-08-10" });
 
   // Create the DynamoDB service object
-  const TableName = "users";
+  const ddb = new aws.DynamoDB({ apiVersion: "2012-08-10" });
 
   const getDbItem = async (getParams) => {
     return await new Promise((resolve, reject) => {
@@ -73,7 +74,7 @@ exports.handler = async (event) => {
         return response;
       }
 
-    case "get":
+    case "getQuestion":
       const getParams = {
         TableName,
         Key: {
@@ -86,7 +87,7 @@ exports.handler = async (event) => {
         const Item = await getDbItem(getParams);
         const response = {
           statusCode: 200,
-          body: JSON.stringify(Item),
+          body: Item.securityQuestion.S,
         };
         return response;
       } catch (err) {

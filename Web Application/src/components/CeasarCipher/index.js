@@ -30,7 +30,7 @@ const CeasarCipher = ({ plainText }) => {
       const res = await axios.post(CEASAR_CIPHER_URL, {
         plainText,
         cipherText: cipherText.toUpperCase(),
-        ceasarKey: currentUser.ceasarKey,
+        userId: currentUser.userId,
       });
       if (res.status === 200) {
         Cookies.set("accessToken", currentUser.accessToken, cookieMeta);

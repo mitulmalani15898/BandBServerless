@@ -17,6 +17,9 @@ import serverless.bnb.lambda.model.RoomBooking;
 
 import java.util.*;
 
+/**
+ * View Room bookings by User Id or booking number
+ **/
 public class ViewBookings implements
         RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 

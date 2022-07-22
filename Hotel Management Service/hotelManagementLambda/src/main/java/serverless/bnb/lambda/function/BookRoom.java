@@ -9,22 +9,27 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import serverless.bnb.lambda.DynamoDB;
 import serverless.bnb.lambda.model.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.List;
 
+/**
+ * AWS Lambda function to Book a room
+ **/
 public class BookRoom implements
         RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent>  {
 
     @Override
     public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent request, Context context) {
         Map<String, String> queryParams = request.getHeaders();
-        String contentType = queryParams.get("Content-Type");
+        String contentType = queryParams.get("content-type");
         APIGatewayProxyResponseEvent response;
 
         if (!contentType.isEmpty() && !contentType.contains("application/json")) {
@@ -43,6 +48,7 @@ public class BookRoom implements
             {
                 if (isAvailable(input)) {
                     RoomBooking bookedRoom = createBooking(input);
+                    System.out.println("Booking done successfully: " + bookedRoom.toString());
                     response = getAPIGatewayResponse(200, "Booking created successfully", "text/plain");
                 }
                 else {
@@ -97,18 +103,21 @@ public class BookRoom implements
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
         Date checkInDate = dateFormatter.parse(input.getCheckIn());
+        Date checkOutDate = dateFormatter.parse(input.getCheckOut());
+
+        int numberOfDays = (int)( (checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24) );
+
         checkInDate.setTime(checkInDate.getTime() + 12L * 60L * 60L * 1000L);
         Calendar checkIn = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         checkIn.setTime(checkInDate);
 
-        Date checkOutDate = dateFormatter.parse(input.getCheckOut());
         checkOutDate.setTime(checkOutDate.getTime() + 10L * 60L * 60L * 1000L);
         Calendar checkOut = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         checkOut.setTime(checkOutDate);
 
         InvoiceLine roomInvoice = InvoiceLine.builder()
                 .type(InvoiceLine.INVOICE_LINE_ROOM)
-                .amount(Float.parseFloat(input.amountPaid))
+                .amount(Float.parseFloat(input.amountPaid) * numberOfDays)
                 .description(input.getRoomType())
                 .build();
 
@@ -118,7 +127,7 @@ public class BookRoom implements
                 .checkIn(checkIn)
                 .checkOut(checkOut)
                 .bookingDate(Calendar.getInstance())
-                .amountPaid(Float.parseFloat(input.amountPaid))
+                .amountPaid(Float.parseFloat(input.amountPaid) * numberOfDays)
                 .status(Status.VALID)
                 .invoiceLines(Arrays.asList(roomInvoice))
                 .build();
@@ -169,8 +178,14 @@ public class BookRoom implements
             boolean isValid = true;
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             try {
-                dateFormat.parse(checkIn);
-                dateFormat.parse(checkOut);
+                Date checkInDate = dateFormat.parse(checkIn);
+                Date checkOutDate = dateFormat.parse(checkOut);
+                if (checkInDate.after(checkOutDate)) {
+                    System.out.println("Check in date is after checkout date");
+                    System.out.println("Check in" + checkIn);
+                    System.out.println("Check in" + checkOut);
+                    isValid = false;
+                }
                 Float.parseFloat(amountPaid);
             }
             catch (ParseException | NumberFormatException exception) {
@@ -182,7 +197,7 @@ public class BookRoom implements
                     || paidCurrency.isEmpty()) {
                 isValid = false;
             }
-            System.out.println("Is valid search criteria :" + isValid);
+            System.out.println("Is valid booking request :" + isValid);
             return isValid;
         }
 
@@ -199,8 +214,10 @@ public class BookRoom implements
             dbDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             String checkInDateString = dbDateFormat.format(checkInDate.getTime());
             String checkOutDateString = dbDateFormat.format(checkOutDate.getTime());
-            System.out.println("Parsed checkin date " + checkInDateString);
+            System.out.println("Parsed checkIn date " + checkInDateString);
             System.out.println("Parsed checkout date " + checkOutDateString);
+            System.out.println("Room type" + RoomType.getRoomType(roomType).name());
+            System.out.println("Status " + Status.VALID.name());
 
             Map<String, AttributeValue> expression = new HashMap<>();
             expression.put(":checkIn", new AttributeValue().withS(checkInDateString));

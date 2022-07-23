@@ -6,7 +6,11 @@ import { useNavigate } from "react-router-dom";
 
 import { AuthContext } from "../../providers/AuthProvider";
 import AuthWrapper from "../AuthWrapper";
-import { CEASAR_CIPHER_URL, cookieMeta } from "../../utility/constants";
+import {
+  CEASAR_CIPHER_URL,
+  AUTH_LAMBDA_URL,
+  cookieMeta,
+} from "../../utility/constants";
 
 const CeasarCipher = ({ plainText }) => {
   const { currentUser } = useContext(AuthContext);
@@ -33,6 +37,14 @@ const CeasarCipher = ({ plainText }) => {
         userId: currentUser.userId,
       });
       if (res.status === 200) {
+        axios.post(AUTH_LAMBDA_URL, {
+          type: "loginSuccess",
+          userId: currentUser.userId,
+          firstName: currentUser.firstName,
+          lastName: currentUser.lastName,
+          email: currentUser.email,
+          timestamp: new Date().toISOString(),
+        });
         Cookies.set("accessToken", currentUser.accessToken, cookieMeta);
         Cookies.set("idToken", currentUser.idToken, cookieMeta);
         Cookies.set("refreshToken", currentUser.refreshToken, cookieMeta);

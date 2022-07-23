@@ -3,7 +3,7 @@ export const USER_POOL_ID = "us-east-1_UPCe8LiV5";
 export const USER_POOL_CLIENT_ID = "2k1t2rs0pojc7bp1886jrjhii7";
 
 export const AUTH_LAMBDA_URL =
-  "https://j6pbadirbtvqoqyrlqkhzecayy0mlkzb.lambda-url.us-east-1.on.aws/";
+  "https://sxw2dqbymlhv5cntpyigzfn2k40poltz.lambda-url.us-east-1.on.aws/";
 
 export const CEASAR_CIPHER_URL =
   "https://us-east1-csci-5410-firestore.cloudfunctions.net/ceasarCipher";

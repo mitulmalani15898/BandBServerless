@@ -1,6 +1,7 @@
 const aws = require("aws-sdk");
 
 const TableName = "users";
+const LoginStatisticsTable = "login_statistics";
 
 exports.handler = async (event) => {
   if (event.body === null || event.body === undefined) {
@@ -126,6 +127,36 @@ exports.handler = async (event) => {
         const response = {
           statusCode: 404,
           body: JSON.stringify("Not found."),
+        };
+        return response;
+      }
+
+    case "loginSuccess":
+      const loginPutParams = {
+        TableName: LoginStatisticsTable,
+        Item: {
+          userId: { S: reqBody.userId },
+          firstName: { S: reqBody.firstName },
+          lastName: { S: reqBody.lastName },
+          email: { S: reqBody.email },
+          timestamp: { S: reqBody.timestamp },
+        },
+      };
+      try {
+        await putDbItem(loginPutParams);
+        const response = {
+          statusCode: 201,
+          body: JSON.stringify(
+            "Login success attempt record saved successfully."
+          ),
+        };
+        return response;
+      } catch (error) {
+        const response = {
+          statusCode: 500,
+          body: JSON.stringify(
+            "Something went wrong, please try again after sometime."
+          ),
         };
         return response;
       }

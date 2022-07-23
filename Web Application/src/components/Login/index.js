@@ -1,16 +1,21 @@
 import { useContext, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Form, FormGroup, Input, Button, Alert } from "reactstrap";
 
 import { AuthContext } from "../../providers/AuthProvider";
 import AuthWrapper from "../AuthWrapper";
-import { AUTH_LAMBDA_URL } from "../../utility/constants";
+import {
+  ADMIN_PASSWORD,
+  ADMIN_USERNAME,
+  AUTH_LAMBDA_URL,
+} from "../../utility/constants";
 import SecurityQnA from "../SecurityQnA";
 import CeasarCipher from "../CeasarCipher";
 import { generateRandomLengthString } from "../../utility/common";
 
 const Login = () => {
+  const navigate = useNavigate();
   const { currentUser, setCurrentUser, authenticate } = useContext(AuthContext);
 
   const [loginDetails, setLoginDetails] = useState({
@@ -49,6 +54,10 @@ const Login = () => {
       return setErrorMessage("Password is required.");
     }
     setErrorMessage("");
+
+    if (email === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+      return navigate("/report", { replace: true });
+    }
 
     authenticate(email, password)
       .then(async (data) => {

@@ -2,6 +2,9 @@ export const AWS_REGION = "us-east-1";
 export const USER_POOL_ID = "us-east-1_UPCe8LiV5";
 export const USER_POOL_CLIENT_ID = "2k1t2rs0pojc7bp1886jrjhii7";
 
+export const ADMIN_USERNAME = "admin@admin.com";
+export const ADMIN_PASSWORD = "Admin@123";
+
 export const AUTH_LAMBDA_URL =
   "https://sxw2dqbymlhv5cntpyigzfn2k40poltz.lambda-url.us-east-1.on.aws/";
 

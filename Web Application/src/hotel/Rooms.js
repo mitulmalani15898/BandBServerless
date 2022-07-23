@@ -4,7 +4,7 @@ import Axios from 'axios';
 import moment from 'moment';
 import RoomType from './RoomType';
 
-export default function Rooms () {
+export default function     Rooms () {
 
     const [checkIn, setCheckIn] = useState('');
     const [checkOut, setCheckOut] = useState('');

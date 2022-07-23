@@ -18,6 +18,9 @@ import serverless.bnb.lambda.model.Status;
 
 import java.util.*;
 
+/**
+ * Cancel a booking booking
+ **/
 public class CancelBooking implements
         RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 

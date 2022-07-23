@@ -3,7 +3,11 @@ import { useState } from "react";
 import moment from 'moment';
 import Axios from 'axios';
 import * as HotelMgmtConstants from './HotelMgmtConstants';
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../providers/AuthProvider";
+import { useContext } from "react";
+import { formatRoom } from './HotelMgmtConstants';
+import BookingInvoice from "./BookingInvoice";
 
 export default function BookingDetailsCard (props) {
 
@@ -11,6 +15,13 @@ export default function BookingDetailsCard (props) {
     const type = props.type;
     const feedbackUrl = `/user/bookings/feedback/${booking.bookingNumber}`;
     const navigate = useNavigate();
+    const { currentUser } = useContext(AuthContext);
+    console.log("Current user is " + currentUser)
+    const [showRoomInvoice, setShowRoomInvoice] = useState(false);
+
+    const onRoomInvoiceHide = () => {
+        setShowRoomInvoice(false);
+    }
 
     const convertDate = (timeInMilli, format) => {
         var convertedDate = "";
@@ -21,9 +32,22 @@ export default function BookingDetailsCard (props) {
         return convertedDate;
     }
 
+    const viewInvoice = () => {
+        setShowRoomInvoice(true);
+    }
+
     const cancelBooking = () => {
         console.log("Cancel booking")
-        const userId = "Akanksha_Singh_2022-07-20T21:58:12.553Z";        
+        var userId = '';
+        if (currentUser) {
+            userId = currentUser.userId;
+        }
+        else
+        {
+            alert("You are not logged-in, please login to proceed further");
+            navigate("/login");
+        }
+        console.log("User Id is :" + userId)      
         const cancelBookingUrl = HotelMgmtConstants.apiBaseUrl + "/hotel/bookings";
         const feedback = {
             userId: userId,
@@ -35,8 +59,8 @@ export default function BookingDetailsCard (props) {
         .put(cancelBookingUrl, feedback)
         .then((response) => {
             if (response.status === 200) {
-                alert("Your booking has been cancelled successfully")        
-                navigate("/rooms")       
+                alert(response.data)        
+                navigate("/user/bookings")       
             }
         })
         .catch((error) => alert("Error in cancelling booking"));
@@ -45,7 +69,7 @@ export default function BookingDetailsCard (props) {
     return (
         <Card md={6}>
             <Card.Header>
-                <strong>{booking.roomType}</strong>    
+                <strong>{formatRoom(booking.roomType)}</strong>    
             </Card.Header>
             <Card.Body>
                 <Row>        
@@ -82,11 +106,13 @@ export default function BookingDetailsCard (props) {
                                     </span>                     
                                     
                                     <Dropdown>
-                                        <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                        <Dropdown.Toggle variant="dark" id="dropdown-basic">
                                             Actions
                                         </Dropdown.Toggle>
                                         <Dropdown.Menu>
-                                            <Dropdown.Item href="#/action-1">View Invoice</Dropdown.Item>
+                                            <Dropdown.Item onClick={viewInvoice}>
+                                                View Invoice
+                                            </Dropdown.Item>   
                                             {
                                                 (booking.status === 'VALID') && 
                                                 <Dropdown.Item onClick={cancelBooking}>Cancel Booking</Dropdown.Item>
@@ -101,21 +127,27 @@ export default function BookingDetailsCard (props) {
                         <Row>
                             <Col>                            
                                 <Dropdown>
-                                    <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                    <Dropdown.Toggle variant="dark" id="dropdown-basic">
                                         Actions
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
                                         <Dropdown.Item href={feedbackUrl}>
                                             Submit Feedback
                                         </Dropdown.Item>
-                                        <Dropdown.Item href="#/action-2">View Invoice</Dropdown.Item>                                        
+                                        <Dropdown.Item onClick={viewInvoice}>
+                                            View Invoice
+                                        </Dropdown.Item>                                        
                                     </Dropdown.Menu>
                                 </Dropdown>                                                        
                             </Col>
                         </Row>
-                    }                        
+                    }                                            
                     </Col>
                 </Row>
+                {
+                    showRoomInvoice && 
+                        <BookingInvoice room={booking} show={showRoomInvoice} onHide={onRoomInvoiceHide} />
+                }
             </Card.Body>
         </Card>
 

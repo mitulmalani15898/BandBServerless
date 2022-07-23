@@ -5,10 +5,6 @@ import base64
 from google.cloud import pubsub_v1
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="./GCP_KEY.json"
 
-#requirements
-#google-api-python-client
-#google-cloud-pubsub
-
 def predict_recommendations(event,context):
     project="sonic-anagram-341118"
     model="ProjectRecommendationModel"
@@ -16,7 +12,7 @@ def predict_recommendations(event,context):
       pubsub_message = base64.b64decode(event['data']).decode('utf-8')
       # instances = "test@gmail.com~1,2,123,3,4"
       # print(instances)
-      user,s = (pubsub_message.split("~"))
+      user,s,persons,cost, duration = (pubsub_message.split("~"))
       s='[{"csv_row":"data","key":"1"}]'.replace("data",s)
       # print(s)
       instances = json.loads(s)
@@ -35,7 +31,7 @@ def predict_recommendations(event,context):
           raise RuntimeError(response['error'])
 
       print(response)
-      data = json.dumps({"user":user,"tour":response['predictions'][0]['classes'][0]})
+      data = json.dumps({"user":user,"tour":response['predictions'][0]['classes'][0],"persons":persons,"cost":cost, "duration":duration})
       print(data)
 
       publisher = pubsub_v1.PublisherClient()

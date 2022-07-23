@@ -2,8 +2,8 @@ import { Routes, Route } from "react-router-dom";
 
 import Rooms from "./hotel/Rooms";
 import UserRoomBookings from "./hotel/UserRoomBookings";
-import Preferences from "./Recommendations/Preferences";
-import Pass from "./Recommendations/Pass";
+import Preferences from "./components/Recommendations/Preferences";
+import Pass from "./components/Recommendations/Pass";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import ForgotPassword from "./components/ForgotPassword";

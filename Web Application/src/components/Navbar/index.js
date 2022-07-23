@@ -30,6 +30,14 @@ const NavbarComponent = () => {
                     <NavItem>
                         <NavLink to="/rooms">Rooms</NavLink>
                     </NavItem>
+                    {
+                        isLoggedIn() && 
+                        <NavItem>
+                            <NavLink to="/user/bookings">
+                                Bookings
+                            </NavLink>
+                        </NavItem>
+                    }
                     <NavItem>
                         <NavLink to="/preferences">Tours</NavLink>
                     </NavItem>

@@ -4,9 +4,9 @@ import Rooms from "./hotel/Rooms";
 import UserRoomBookings from "./hotel/UserRoomBookings";
 import Preferences from "./components/Recommendations/Preferences";
 import Pass from "./components/Recommendations/Pass";
+import RoomBooking from "./hotel/RoomBooking";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
-import ForgotPassword from "./components/ForgotPassword";
 import Visualization from "./components/Visualization/Visualization";
 import Report from "./components/Visualization/Report";
 import NavbarComponent from "./components/Navbar";
@@ -22,20 +22,25 @@ const App = () => {
                     <Route exact path="/" element={<Rooms />} />
                     <Route exact path="/login" element={<Login />} />
                     <Route exact path="/signup" element={<Signup />} />
-                    <Route
-                        exact
-                        path="/forgot-password"
-                        element={<ForgotPassword />}
-                    />
+
                     <Route exact path="/rooms" element={<Rooms />} />
+                    <Route exact path="/rooms/book" element={<RoomBooking />} />
                     <Route
                         exact
                         path="/user/bookings"
                         element={<UserRoomBookings />}
                     />
-                    <Route path="/preferences" element={<Preferences />} />
-                    <Route path="/pass" element={<Pass />} />
-                    <Route path="/feedback" element={<Feedback />} />
+                    <Route
+                        path="/user/bookings/feedback/:bookingNumber"
+                        element={<Feedback />}
+                    />
+
+                    <Route
+                        exact
+                        path="/preferences"
+                        element={<Preferences />}
+                    />
+                    <Route exact path="/pass" element={<Pass />} />
                     <Route
                         exact
                         path="/visualization"

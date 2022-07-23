@@ -17,6 +17,9 @@ import serverless.bnb.lambda.model.RoomBooking;
 
 import java.util.*;
 
+/**
+ * View Room bookings by User Id or booking number
+ **/
 public class ViewBookings implements
         RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
@@ -32,7 +35,7 @@ public class ViewBookings implements
                 List<RoomBooking> bookings = fetchBookings(searchCriteria);
                 if (Optional.ofNullable(bookings).isEmpty() || bookings.size() == 0) {
                     String plainTextResponse = "No bookings found";
-                    response = getAPIGatewayResponse(200, plainTextResponse, "text/plain");
+                    response = getAPIGatewayResponse(404, plainTextResponse, "text/plain");
                 }
                 else
                 {

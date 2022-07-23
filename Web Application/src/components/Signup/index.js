@@ -68,7 +68,7 @@ const Signup = () => {
     }
     setErrorMessage("");
 
-    const userId = `${firstName}_${lastName}_${new Date().toISOString()}`;
+    const userId = `${firstName}_${lastName}_${new Date().valueOf()}`;
     const ceasarKey = generateCeasarCipherKey();
 
     const attributeList = [

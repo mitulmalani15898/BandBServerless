@@ -19,8 +19,8 @@ const Login = () => {
   });
   const [errorMessage, setErrorMessage] = useState("");
 
-  // get user's security question answer
-  const getSecurityQnA = async (data) => {
+  // get user's security question
+  const getUserSecurityQuestion = async (data) => {
     return await new Promise(async (resolve, reject) => {
       try {
         const res = await axios.post(AUTH_LAMBDA_URL, data);
@@ -30,7 +30,7 @@ const Login = () => {
           reject();
         }
       } catch (err) {
-        console.log("getSecurityQnA: ", err);
+        console.log("getUserSecurityQuestion: ", err);
         reject(err);
       }
     });
@@ -54,18 +54,16 @@ const Login = () => {
       .then(async (data) => {
         if (data) {
           try {
-            const res = await getSecurityQnA({
-              type: "get",
+            const res = await getUserSecurityQuestion({
+              type: "getQuestion",
               userId: data.idToken.payload["custom:userId"],
             });
             setCurrentUser((prev) => ({
               ...prev,
-              question: res.data.securityQuestion.S,
-              answer: res.data.securityAnswer.S,
-              ceasarKey: parseInt(res.data.ceasarKey.N),
+              question: res.data,
             }));
           } catch (err) {
-            console.log("getSecurityQnA: ", err);
+            console.log("getUserSecurityQuestion: ", err);
             setErrorMessage(
               "Something went wrong, please try again after sometime."
             );
@@ -110,7 +108,6 @@ const Login = () => {
             Sign in
           </Button>
           <div className="auth-link-wrapper">
-            {/* <Link to="/forgot-password">Forgot password?</Link> */}
             <span></span>
             <Link to="/signup">Don't have an account? Sign Up</Link>
           </div>

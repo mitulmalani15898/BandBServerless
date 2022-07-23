@@ -1,25 +1,26 @@
 import "bootstrap/dist/css/bootstrap.css";
 import { useState, useContext } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { isLoggedIn } from "../../utility/common";
+import * as HotelMgmtConstants from '../../hotel/HotelMgmtConstants';
+import Axios from "axios";
 import {
-    Divider,
-    FormControl,
-    InputLabel,
-    MenuItem,
-    Select,
+    TextField,
     Stack,
     Button,
 } from "@mui/material";
 
-import TextField from "@mui/material/TextField";
+
 const Feedback = () => {
     const navigate = useNavigate();
     const [fields, setFields] = useState({
-        booking: [],
         title: "",
         description: "",
     });
+
+    let param = useParams();
+    const bookingNumber = param.bookingNumber;
+    console.log("The booking Number is " + bookingNumber);
 
     const handleFieldsChange = (e) => {
         const { currentTarget: input } = e;
@@ -31,9 +32,26 @@ const Feedback = () => {
     };
 
     const handleSubmit = (event) => {
-        // console.log(event);
-        console.log(fields);
         event.preventDefault();
+        const userId = "Akanksha_Singh_2022-07-20T21:58:12.553Z";        
+        const createFeedbackUrl = HotelMgmtConstants.customerApiBaseUrl + "/user/feedback";
+        const feedback = {
+            userId: userId,
+            header: fields.title,
+            body: fields.description,
+            bookingNumber: bookingNumber
+        }
+        console.log(feedback);
+
+        Axios
+        .post(createFeedbackUrl, feedback)
+        .then((response) => {
+            if (response.status === 201) {
+                alert("Feedback saved successfully") 
+                navigate("/user/bookings")
+            }
+        })
+        .catch((error) => alert("Error in saving the feedback, please try again later"));
     };
 
     return (
@@ -59,29 +77,16 @@ const Feedback = () => {
             <br />
             <br />
             <div style={{ paddingLeft: "25px", marginTop: "15px" }}>
-                <FormControl
-                    sx={{
+
+                <TextField sx={{
                         width: "100%",
                     }}
-                >
-                    <InputLabel id="bookings">Previous Bookings</InputLabel>
-                    <Select
-                        labelId="bookings"
-                        name="booking"
-                        value={fields.booking}
-                        label="Previous Bookings"
-                        placeholder="Ex: 2-bed delux 15-12-2021"
-                        onChange={handleFieldsChange}
-                        sx={{ backgroundColor: "#fff !important" }}
-                    >
-                        <MenuItem value={0}>Select a booking</MenuItem>
-                        <MenuItem value={1}>1</MenuItem>
-                        <MenuItem value={2}>2</MenuItem>
-                        <MenuItem value={3}>3</MenuItem>
-                        <MenuItem value={4}>4</MenuItem>
-                        <MenuItem value={5}>5 or more</MenuItem>
-                    </Select>
-                </FormControl>
+                    disabled
+                    id="filled-disabled"
+                    label="Booking Number"
+                    defaultValue={bookingNumber}
+                
+                />
             </div>
             <br />
             <div style={{ paddingLeft: "25px", marginTop: "15px" }}>

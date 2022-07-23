@@ -21,8 +21,10 @@ import serverless.bnb.lambda.model.Status;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
+/**
+ * AWS Lambda function to view available rooms
+ **/
 public class BrowseRooms implements
         RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
@@ -41,15 +43,13 @@ public class BrowseRooms implements
                 System.out.println("All rooms :" + rooms.size());
                 List<Room> availableRooms = new ArrayList<>();
                 for (Room room : rooms) {
-                    if (bookedRoomsByType.containsKey(room)
-                            && bookedRoomsByType.get(room) >= room.getTotalRooms()) {
+                    if (bookedRoomsByType.containsKey(room.getRoomType())
+                            && bookedRoomsByType.get(room.getRoomType()) >= room.getTotalRooms()) {
                         continue;
                     } else {
                         availableRooms.add(room);
                     }
                 }
-//                System.out.println("All available rooms are :");
-//                availableRooms.forEach(r -> System.out.println(r.toString()));
                 BrowseRoomsResponse browseRoomsResponse = new BrowseRoomsResponse(true, availableRooms);
                 String responseBody = new ObjectMapper().writeValueAsString(browseRoomsResponse);
                 System.out.println("JSON Response body string :\n" + responseBody);
@@ -58,6 +58,7 @@ public class BrowseRooms implements
             catch (Exception e) {
 //            Send internal server error
                 System.err.println("An exception occurred while processing the request :" + e.getMessage());
+                e.printStackTrace();
                 response = getAPIGatewayResponse(500,
                         "An error occurred while processing the request", "text/plain");
             }
@@ -80,12 +81,21 @@ public class BrowseRooms implements
 
         List<RoomBooking> bookedRooms = mapper.scan(RoomBooking.class, scanExpression);
         if (bookedRooms.size() > 0) {
-            bookedRoomsByType = bookedRooms
-                    .stream()
-                    .collect(Collectors.groupingBy(RoomBooking::getRoomType, Collectors.counting()));
+            System.out.println("bookedRooms" + bookedRooms.size());
+            bookedRooms.forEach(room -> System.out.println(room.toString()));
+            for (RoomBooking booking : bookedRooms) {
+                if (bookedRoomsByType.containsKey(booking.getRoomType())) {
+                    bookedRoomsByType.put(booking.getRoomType(), bookedRoomsByType.get(booking.getRoomType()) + 1);
+                }
+                else
+                {
+                    bookedRoomsByType.put(booking.getRoomType(), 1L);
+                }
+            }
         } else {
             System.out.println("No bookings present for dates :" + criteria.getCheckIn() + " & " + criteria.getCheckOut());
         }
+        bookedRoomsByType.forEach((k,v) -> System.out.println("Room Type = " + k.name() + " Booked Rooms : " + v));
         return bookedRoomsByType;
     }
 
@@ -144,8 +154,9 @@ public class BrowseRooms implements
             dbDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             String checkInDateString = dbDateFormat.format(checkInDate.getTime());
             String checkOutDateString = dbDateFormat.format(checkOutDate.getTime());
-            System.out.println("Parsed checkin date " + checkInDateString);
-            System.out.println("Parsed checkout date " + checkOutDateString);
+            System.out.println("Parsed checkIn date " + checkInDateString);
+            System.out.println("Parsed checkOut date " + checkOutDateString);
+            System.out.println("Status " + Status.VALID.name());
 
             Map<String, AttributeValue> expression = new HashMap<>();
             expression.put(":checkIn", new AttributeValue().withS(checkInDateString));

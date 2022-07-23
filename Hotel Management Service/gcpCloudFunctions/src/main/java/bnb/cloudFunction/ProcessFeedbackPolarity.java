@@ -16,6 +16,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
 
+/**
+ * GCP Cloud function which is a subscriber to GCP Topic
+ * which persists the result of sentiment analysis passed to Hotel management service
+ * by the Feedback analysis service
+ * */
 public class ProcessFeedbackPolarity implements BackgroundFunction<PubSubMessage> {
   private static final Logger logger = Logger.getLogger(ProcessFeedbackPolarity.class.getName());
   private static final String ENDPOINT_URL = "dynamodb.us-east-1.amazonaws.com";
@@ -62,7 +67,7 @@ public class ProcessFeedbackPolarity implements BackgroundFunction<PubSubMessage
    * Creates an instance of DynamoDbClient for performing operations on DynamoDB tables
    * EnvironmentVariableCredentialsProvider require
    * values of below default environment variables exported
-   * AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+   * AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN
    **/
   public static DynamoDbClient getDynamoDBClient() throws Exception {
     DynamoDbClient dynamoDbClient = DynamoDbClient.builder()

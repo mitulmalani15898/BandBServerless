@@ -1,5 +1,8 @@
 const aws = require("aws-sdk");
 
+const TableName = "users";
+const LoginStatisticsTable = "login_statistics";
+
 exports.handler = async (event) => {
   if (event.body === null || event.body === undefined) {
     const response = {
@@ -12,10 +15,9 @@ exports.handler = async (event) => {
 
   // Set the region
   aws.config.update({ region: "us-east-1" });
-  const ddb = new aws.DynamoDB({ apiVersion: "2012-08-10" });
 
   // Create the DynamoDB service object
-  const TableName = "users";
+  const ddb = new aws.DynamoDB({ apiVersion: "2012-08-10" });
 
   const getDbItem = async (getParams) => {
     return await new Promise((resolve, reject) => {
@@ -73,7 +75,7 @@ exports.handler = async (event) => {
         return response;
       }
 
-    case "get":
+    case "getQuestion":
       const getParams = {
         TableName,
         Key: {
@@ -86,7 +88,7 @@ exports.handler = async (event) => {
         const Item = await getDbItem(getParams);
         const response = {
           statusCode: 200,
-          body: JSON.stringify(Item),
+          body: Item.securityQuestion.S,
         };
         return response;
       } catch (err) {
@@ -125,6 +127,36 @@ exports.handler = async (event) => {
         const response = {
           statusCode: 404,
           body: JSON.stringify("Not found."),
+        };
+        return response;
+      }
+
+    case "loginSuccess":
+      const loginPutParams = {
+        TableName: LoginStatisticsTable,
+        Item: {
+          userId: { S: reqBody.userId },
+          firstName: { S: reqBody.firstName },
+          lastName: { S: reqBody.lastName },
+          email: { S: reqBody.email },
+          timestamp: { S: reqBody.timestamp },
+        },
+      };
+      try {
+        await putDbItem(loginPutParams);
+        const response = {
+          statusCode: 201,
+          body: JSON.stringify(
+            "Login success attempt record saved successfully."
+          ),
+        };
+        return response;
+      } catch (error) {
+        const response = {
+          statusCode: 500,
+          body: JSON.stringify(
+            "Something went wrong, please try again after sometime."
+          ),
         };
         return response;
       }

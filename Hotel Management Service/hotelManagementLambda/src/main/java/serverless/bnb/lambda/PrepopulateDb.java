@@ -1,8 +1,7 @@
 package serverless.bnb.lambda;
 
-import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.BasicSessionCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
@@ -17,14 +16,16 @@ import java.util.Map;
 
 public class PrepopulateDb {
 
-    private static String ACCESS_KEY = "AKIAQVMKKDE3SWBCF7TL";
-    private static String SECRET_KEY = "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";
+    private static String ACCESS_KEY = "ASIATAMHZCNHTWJZ624I";
+    private static String SECRET_KEY = "qafjBhfasEcUA07fJOzMpOlSSadZKJPGwgQpEiC4";
+    private static String SESSION_KEY = "FwoGZXIvYXdzEAAaDER+JjQWqQBvhwd1/SLAAag9qDQUwdXMlETsEjF6MRjqc6L9NR8IC7mg39HT5TjxqUs0yNDP3bDBzgpLdiAFU5jHgHNmduFoAiu9oWkjSvMiqI6a2tvcHAaSJtcEZPgRw3bUFjijPg4GYPF4eJzODWf8rKCAru0C7Sv2z6Fbh3uCZqWVwEQkhGXJQnePD2/kSMza2RngQ9oDCXMqri7KHG3NPRyZ8x/avu6h5Atg2MN5awXejdYPrTbzd+eeZCF9SihoGtgJ2cERIcsC7mJmVii1++GWBjItf76KuTNB9G3soqnilvvtGZOGdWi7XbLS009mEaVKYHwKTkMhZNZjFY1mDvBf";
     private static String AWS_REGION = "us-east-1";
     private static String ENDPOINT_URL = "dynamodb.us-east-1.amazonaws.com";
 
     public static void main (String a[]) {
 
-        AWSCredentials dynamoDBCredentials = new BasicAWSCredentials(ACCESS_KEY, SECRET_KEY);
+//        AWSCredentials dynamoDBCredentials = new BasicAWSCredentials(ACCESS_KEY, SECRET_KEY);
+        BasicSessionCredentials dynamoDBCredentials = new BasicSessionCredentials(ACCESS_KEY, SECRET_KEY, SESSION_KEY);
 
         AmazonDynamoDB dynamoDbClient = AmazonDynamoDBClientBuilder
                 .standard()

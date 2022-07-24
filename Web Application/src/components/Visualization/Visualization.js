@@ -37,8 +37,7 @@ function Visualization() {
           {[
             "Customer booking ",
             "Customer food orders",
-            "Customer booking preference",
-            "Income"
+            "Customer booking preference"
           ].map((text, index) => (
             <ListItem key={text} disablePadding>
               <ListItemButton onClick={() => graphHandler(index)}>

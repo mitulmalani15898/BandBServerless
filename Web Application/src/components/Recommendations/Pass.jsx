@@ -19,7 +19,8 @@ const Pass = () => {
     });
 
     useEffect(() => {
-        if (isLoggedIn()) {
+        if (isLoggedIn() && fields.fromdate.length == 0) {
+            console.log("calling axios");
             axios({
                 method: "get",
                 mode: "no-cors",
@@ -80,92 +81,110 @@ const Pass = () => {
     }
 
     return (
-        <div className="container" style={{ height: "100vh", display: "flex" }}>
+        (isLoggedIn() && currentUser != null && (
             <div
-                style={{
-                    // height: 756,
-                    // width: 1344,
-                    height: 702,
-                    width: 1248,
-                    // height: 648,
-                    // width: 1152,
-                    // background: `url("https://res.cloudinary.com/hackerrank/image/upload/c_pad,b_auto:predominant,fl_preserve_transparency//v1658150645/pass_qhmach.jpg")`,
-                    background: `url("https://asset.cloudinary.com/hackerrank/a3c32779153e3925da97042b765ca3e8")`,
-                    // backgroundSize: "1134px 756px",
-                    // backgroundSize: "1152px 648px",
-                    backgroundSize: "1248px 702px",
-                    // backgroundSize: "960px 540px",
-                    // height: 540,
-                    // width: 960,
-                    margin: "auto",
-                    color: "#FFB93F",
-                    // color: "#FFF",
-                    // marginTop: "100px",
-                    // padding: "150px 150px 0 200px",
-                    padding: "175px 150px 0 200px",
-                    fontSize: 22,
-                }}
+                className="container"
+                style={{ height: "100vh", display: "flex" }}
             >
-                <div style={{ verticalAlign: "middle" }}>
-                    <div className="row mb-5">
-                        <div className="col">
-                            <div className="form-outline">
-                                <label className="form-label">
-                                    First name :{" " + currentUser.firstName}
-                                </label>
+                <div
+                    style={{
+                        // height: 756,
+                        // width: 1344,
+                        // height: 702,
+                        // width: 1248,
+                        // height: 648,
+                        // width: 1152,
+                        height: 756,
+                        width: 1134,
+                        // background: `url("https://res.cloudinary.com/hackerrank/image/upload/c_pad,b_auto:predominant,fl_preserve_transparency//v1658150645/pass_qhmach.jpg")`,
+                        background: `url("https://res.cloudinary.com/hackerrank/image/upload/v1658645743/pass-modified_kojfr2.jpg")`,
+
+                        backgroundSize: "1134px 756px",
+                        // backgroundSize: "1152px 648px",
+                        // backgroundSize: "1248px 702px",
+                        // backgroundSize: "960px 540px",
+
+                        // height: 540,
+                        // width: 960,
+                        margin: "auto",
+                        // color: "#FFB93F",
+                        color: "#FFF",
+                        // marginTop: "100px",
+                        // padding: "150px 150px 0 200px",
+                        padding: "175px 150px 0 200px",
+                        fontSize: 22,
+                    }}
+                >
+                    <div style={{ verticalAlign: "middle" }}>
+                        <div className="row mb-5">
+                            <div className="col">
+                                <div className="form-outline">
+                                    <label className="form-label">
+                                        First name :
+                                        {" " + currentUser.firstName}
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="col">
+                                <div className="form-outline">
+                                    <label className="form-label">
+                                        Last name :{" " + currentUser.lastName}
+                                    </label>
+                                </div>
                             </div>
                         </div>
-                        <div className="col">
-                            <div className="form-outline">
-                                <label className="form-label">
-                                    Last name :{" " + currentUser.lastName}
-                                </label>
-                            </div>
+
+                        <div className="form-outline mb-5">
+                            <label className="form-label">
+                                Company name : B&B Tour Services
+                            </label>
                         </div>
-                    </div>
 
-                    <div className="form-outline mb-5">
-                        <label className="form-label">
-                            Company name : B&B Tour Services
-                        </label>
-                    </div>
-
-                    <div className="form-outline mb-5">
-                        <label className="form-label">
-                            Tour Package : {" " + fields.tour}
-                        </label>
-                    </div>
-
-                    <div className="form-outline mb-5">
-                        <label className="form-label">
-                            Total Number of Persons : {" " + fields.persons}
-                        </label>
-                    </div>
-
-                    <div className="form-outline mb-5">
-                        <label className="form-label">
-                            Cost : {" " + fields.cost + " per person"}
-                        </label>
-                    </div>
-                    <div className="row">
-                        <div className="col">
-                            <div className="form-outline">
-                                <label className="form-label">
-                                    Valid From : {" " + fields.fromdate}
-                                </label>
-                            </div>
+                        <div className="form-outline mb-5">
+                            <label className="form-label">
+                                Tour Package : {" " + fields.tour}
+                            </label>
                         </div>
-                        <div className="col">
-                            <div className="form-outline">
-                                <label className="form-label">
-                                    Valid To : {" " + fields.todate}
-                                </label>
+
+                        <div className="form-outline mb-5">
+                            <label className="form-label">
+                                Total Number of Persons : {" " + fields.persons}
+                            </label>
+                        </div>
+
+                        <div className="form-outline mb-5">
+                            <label className="form-label">
+                                Cost : {" " + fields.cost + " per person"}
+                            </label>
+                        </div>
+                        <div className="row">
+                            <div className="col">
+                                <div className="form-outline">
+                                    <label className="form-label">
+                                        Valid From : {" " + fields.fromdate}
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="col">
+                                <div className="form-outline">
+                                    <label className="form-label">
+                                        Valid To : {" " + fields.todate}
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        )) ||
+        (!isLoggedIn() &&
+            swal({
+                title: "Unauthorized User",
+                text: "Please login to check your tour passes",
+                icon: "warning",
+                timer: 3000,
+                buttons: false,
+            }) && <Navigate to="/" replace />)
     );
 };
 

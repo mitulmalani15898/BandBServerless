@@ -44,9 +44,12 @@ const NavbarComponent = () => {
                     <NavItem>
                         <NavLink to="/pass">Tour Passes</NavLink>
                     </NavItem>
+                    {
+                        isLoggedIn() &&
                     <NavItem>
                         <NavLink to="/visualization">Visualization</NavLink>
                     </NavItem>
+                    }
                 </Nav>
                 {isLoggedIn() ? (
                     <NavItem>

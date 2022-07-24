@@ -67,7 +67,7 @@ function Visualization() {
               width="800"
               height="600"
               title="bar-chart"
-              src="https://datastudio.google.com/embed/reporting/a9082509-beb6-4234-8b26-1d618c7b0194/page/Vt0xC"
+              src="https://datastudio.google.com/embed/reporting/64fd40ff-745b-4f4c-aea6-f886f26ce56b/page/QTYyC"
               frameBorder="0"
               style={{ border: 0 }}
               allowFullScreen

@@ -67,10 +67,14 @@ const Login = () => {
               type: "getQuestion",
               userId: data.idToken.payload["custom:userId"],
             });
-            setCurrentUser((prev) => ({
-              ...prev,
-              question: res.data,
-            }));
+            if (res.data.statusCode === 200) {
+              setCurrentUser((prev) => ({
+                ...prev,
+                question: res.data.body,
+              }));
+            } else {
+              throw new Error();
+            }
           } catch (err) {
             console.log("getUserSecurityQuestion: ", err);
             setErrorMessage(

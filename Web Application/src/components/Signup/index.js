@@ -102,7 +102,7 @@ const Signup = () => {
         }
         const cognitoUser = result.user;
         console.log("user name is " + cognitoUser.getUsername());
-        
+
         try {
           const res = await postSecurityQnA({
             type: "save",
@@ -111,7 +111,7 @@ const Signup = () => {
             securityAnswer: securityAnswer.toLowerCase(),
             ceasarKey,
           });
-          if (res.status === 201) {
+          if (res.data.statusCode === 201) {
             setSuccessMessage(
               `<div>Your <b>Ceasar Cipher Key</b> for future multi-factor authentication is <b>${ceasarKey}</b>. 
              Please make sure you do not forget it.</div>`

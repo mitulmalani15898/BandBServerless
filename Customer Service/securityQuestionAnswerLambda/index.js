@@ -4,14 +4,15 @@ const TableName = "users";
 const LoginStatisticsTable = "login_statistics";
 
 exports.handler = async (event) => {
-  if (event.body === null || event.body === undefined) {
+  const reqBody = event;
+
+  if (reqBody === null || reqBody === undefined) {
     const response = {
       statusCode: 400,
-      body: JSON.stringify("Please provide proper and valid request body."),
+      body: "Please provide proper and valid request body.",
     };
     return response;
   }
-  const reqBody = JSON.parse(event.body);
 
   // Set the region
   aws.config.update({ region: "us-east-1" });
@@ -62,15 +63,13 @@ exports.handler = async (event) => {
         await putDbItem(putParams);
         const response = {
           statusCode: 201,
-          body: JSON.stringify("Security question answer saved successfully."),
+          body: "Security question answer saved successfully.",
         };
         return response;
       } catch (error) {
         const response = {
           statusCode: 500,
-          body: JSON.stringify(
-            "Something went wrong, please try again after sometime."
-          ),
+          body: "Something went wrong, please try again after sometime.",
         };
         return response;
       }
@@ -94,7 +93,7 @@ exports.handler = async (event) => {
       } catch (err) {
         const response = {
           statusCode: 404,
-          body: JSON.stringify("Not found."),
+          body: "User Not found.",
         };
         return response;
       }
@@ -114,19 +113,19 @@ exports.handler = async (event) => {
         if (Item.securityAnswer.S === reqBody.securityAnswer) {
           response = {
             statusCode: 200,
-            body: JSON.stringify("User authenticated successfully."),
+            body: "User authenticated successfully.",
           };
         } else {
           response = {
             statusCode: 401,
-            body: JSON.stringify("Authentication failed, please try again."),
+            body: "Authentication failed, please try again.",
           };
         }
         return response;
       } catch (err) {
         const response = {
           statusCode: 404,
-          body: JSON.stringify("Not found."),
+          body: "Not found.",
         };
         return response;
       }
@@ -146,17 +145,13 @@ exports.handler = async (event) => {
         await putDbItem(loginPutParams);
         const response = {
           statusCode: 201,
-          body: JSON.stringify(
-            "Login success attempt record saved successfully."
-          ),
+          body: "Login success attempt record saved successfully.",
         };
         return response;
       } catch (error) {
         const response = {
           statusCode: 500,
-          body: JSON.stringify(
-            "Something went wrong, please try again after sometime."
-          ),
+          body: "Something went wrong, please try again after sometime.",
         };
         return response;
       }
@@ -164,7 +159,7 @@ exports.handler = async (event) => {
     default:
       const response = {
         statusCode: 200,
-        body: JSON.stringify("Hello from Authentication Lambda!"),
+        body: "Hello from Authentication Lambda!",
       };
       return response;
   }

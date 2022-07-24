@@ -59,7 +59,7 @@ const App = () => {
             <Footer />
             <LexChat
                 botName="BnBL"
-                IdentityPoolId="us-east-1:7bad2544-eb75-46f5-b0bd-3b42296e4ff9"
+                IdentityPoolId="us-east-1:cade6d15-f40e-4b07-a2cf-5a176b0f54ff"
                 placeholder="Placeholder text"
                 backgroundColor="#FFFFFF"
                 height="430px"

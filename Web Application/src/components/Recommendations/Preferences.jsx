@@ -88,7 +88,7 @@ const Preferences = () => {
     };
 
     return (
-        (isLoggedIn() && (
+        (isLoggedIn() && currentUser != null && (
             <div className="container">
                 <div className="row d-flex justify-content-center">
                     <div

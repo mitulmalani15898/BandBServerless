@@ -35,7 +35,9 @@ function Report() {
         <List>
           {[
             "User Login Statistics",
-            "Feedback analysis"
+            "Feedback analysis",
+            "Income",
+            "Booking number per day"
           ].map((text, index) => (
             <ListItem key={text} disablePadding>
               <ListItemButton onClick={() => graphHandler(index)}>
@@ -65,6 +67,28 @@ function Report() {
               height="1000"
               title="bar-chart"
               src="https://datastudio.google.com/embed/reporting/5dbed989-7fcf-4e66-819f-ae2da4eaef6a/page/df1xC"
+              frameBorder="0"
+              style={{ border: 0 }}
+              allowFullScreen
+            ></iframe>
+          )}
+          {num === 2 && (
+            <iframe
+              width="1000"
+              height="1000"
+              title="bar-chart"
+              src="https://datastudio.google.com/embed/reporting/eb5084c8-3e41-4de6-929d-99fe821c61a9/page/iRXyC"
+              frameBorder="0"
+              style={{ border: 0 }}
+              allowFullScreen
+            ></iframe>
+          )}
+          {num === 3 && (
+            <iframe
+              width="1000"
+              height="1000"
+              title="bar-chart"
+              src="https://datastudio.google.com/embed/reporting/26e70154-7af7-4e17-8a0d-e8447fae3ca1/page/JB1xC"
               frameBorder="0"
               style={{ border: 0 }}
               allowFullScreen

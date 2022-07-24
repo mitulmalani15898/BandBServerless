@@ -1,3 +1,9 @@
+"""
+    Author: Shiva Shankar Pandillapalli
+    Banner: B00880049
+    Task: Tour Operator Service takes the information (Recommended tour information) received from the google pub/sub pushed by tour service cloud function and writes the information as needed to the mongoDB database.
+"""
+
 import boto3
 from botocore.config import Config
 from datetime import date

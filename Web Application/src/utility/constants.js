@@ -6,7 +6,7 @@ export const ADMIN_USERNAME = "admin@admin.com";
 export const ADMIN_PASSWORD = "Admin@123";
 
 export const AUTH_LAMBDA_URL =
-  "https://sxw2dqbymlhv5cntpyigzfn2k40poltz.lambda-url.us-east-1.on.aws/";
+  "https://a9osifr0d7.execute-api.us-east-1.amazonaws.com/prod/user";
 
 export const CEASAR_CIPHER_URL =
   "https://us-east1-csci-5410-firestore.cloudfunctions.net/ceasarCipher";

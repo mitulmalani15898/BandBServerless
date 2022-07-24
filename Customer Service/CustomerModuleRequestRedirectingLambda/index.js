@@ -1,3 +1,9 @@
+/*
+    Author: Shiva Shankar Pandillapalli
+    Banner: B00880049
+    Task: Redirection of input received from tour preferences web page to tour service by publishing a message to google pub/sub topic as shown below in the javascript. This is a lambda function deployed as a part of the customer module microservices to redirect the input.
+*/
+
 const { PubSub } = require("@google-cloud/pubsub");
 require("dotenv").config();
 const projectId = "sonic-anagram-341118";

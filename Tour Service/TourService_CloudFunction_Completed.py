@@ -1,3 +1,9 @@
+"""
+    Author: Shiva Shankar Pandillapalli
+    Banner: B00880049
+    Task: Tour Service takes the information (user preferences information) received from the google pub/sub pushed by the web application and try to predict a tour for the user based on the received preferences data. Once the recommendations are predicted, those are passed to tour operator service to write the information to the database to persist the information to use it when needed.
+"""
+
 import googleapiclient.discovery
 import os
 import json

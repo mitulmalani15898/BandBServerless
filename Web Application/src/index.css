@@ -59,3 +59,7 @@ a:hover {
   color: #fff;
   text-decoration: none;
 }
+
+.pointer:hover{
+  cursor: pointer;
+}

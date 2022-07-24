@@ -25,8 +25,39 @@ export default function KitchenOrders(props) {
 	const { currentUser } = useContext(AuthContext);
 	const [pastBookings, setPastBookings] = useState([]);
 	const [upcomingBookings, setUpcomingBookings] = useState([]);
+	const [fda, setFda] = useState([]);
+	const [selectedBooking, setSelectedBooking] = useState();
 
 	const navigate = useNavigate();
+
+	var getDaysArray = function (s, e) {
+		for (
+			var a = [], d = new Date(s);
+			d <= new Date(e);
+			d.setDate(d.getDate() + 1)
+		) {
+			a.push(new Date(d));
+		}
+		return a;
+	};
+
+	const handleChangeSel = (e) => {
+		console.log("E: ", e.target.value);
+		const sb = upcomingBookings.find((x) => x.bookingNumber === e.target.value);
+		setSelectedBooking(sb);
+	};
+
+	useEffect(() => {
+		if (selectedBooking) {
+			const darr = getDaysArray(
+				selectedBooking.checkIn,
+				selectedBooking.checkOut
+			);
+			setFda(darr);
+			setSelectedDate(fda[0]);
+		}
+	}, [selectedBooking]);
+
 	const processBookings = (bookings) => {
 		const now = new Date();
 		let pastBookings = [];
@@ -39,10 +70,12 @@ export default function KitchenOrders(props) {
 			}
 		});
 		setPastBookings(pastBookings);
+		upcomingBookings = upcomingBookings.filter((b) => b.status === "VALID");
 		setUpcomingBookings(upcomingBookings);
+		setSelectedBooking(upcomingBookings[0]);
 		console.log("Total past bookings " + pastBookings.length);
 		console.log("Total upcoming bookings " + upcomingBookings.length);
-		console.log(upcomingBookings);
+		setSelectedBooking(upcomingBookings[0]);
 		if (upcomingBookings.length <= 0) {
 			navigate("/rooms");
 		}
@@ -99,7 +132,34 @@ export default function KitchenOrders(props) {
 		console.log(orderItems);
 	};
 
-	const fireOrder = async () => {};
+	const fireOrder = async () => {
+		if (orderItems.length <= 0) {
+			return alert("Please select some items to order");
+		}
+		const reqObj = {
+			project_id: "csci-5410-s22-353123",
+			topic_id: "kitchen_service",
+		};
+		reqObj["items"] = orderItems;
+		reqObj["user_id"] = currentUser.userId;
+		reqObj["cost"] = orderItems.reduce(
+			(acc, curr) => acc + parseFloat(curr.cost) * parseInt(curr.quantity),
+			0.0
+		);
+		reqObj["BookingNumber"] = selectedBooking.bookingNumber;
+
+		const res = await axios.post(
+			"https://gb4hi5fgpb.execute-api.us-east-1.amazonaws.com/prod/hotel/food",
+			reqObj
+		);
+		if (res.data.err) {
+			alert("Something went wrong, please try again!");
+		} else {
+			alert("Order created successfully");
+			setOrderItems([]);
+			setSelectedDate();
+		}
+	};
 
 	return (
 		<div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -187,9 +247,12 @@ export default function KitchenOrders(props) {
 							</tr>
 						</tbody>
 					</Table>
-					<Form.Select>
-						<option>Booking 1</option>
-						<option>Booking 2</option>
+					<Form.Select onChange={(e) => handleChangeSel(e)}>
+						{upcomingBookings
+							? upcomingBookings.map((b) => (
+									<option value={b.bookingNumber}>{b.bookingNumber}</option>
+							  ))
+							: null}
 					</Form.Select>
 					<div
 						style={{
@@ -200,27 +263,29 @@ export default function KitchenOrders(props) {
 							justifyContent: "space-around",
 						}}
 					>
-						{dates.map((date) => (
-							<div
-								className="pointer"
-								style={{
-									fontSize: "small",
-									borderRadius: "5px",
-									border: "1px solid gray",
-									backgroundColor: `${
-										selectedDate === date ? "lightgreen" : "white"
-									}`,
-									color: `${selectedDate === date ? "green" : "black"}`,
-									fontWeight: `${selectedDate === date ? "bold" : ""}`,
-									margin: "5px",
-									padding: "5px",
-								}}
-								key={date}
-								onClick={() => setSelectedDate(date)}
-							>
-								{date}
-							</div>
-						))}
+						{fda
+							? fda.map((date) => (
+									<div
+										className="pointer"
+										style={{
+											fontSize: "small",
+											borderRadius: "5px",
+											border: "1px solid gray",
+											backgroundColor: `${
+												selectedDate === date ? "lightgreen" : "white"
+											}`,
+											color: `${selectedDate === date ? "green" : "black"}`,
+											fontWeight: `${selectedDate === date ? "bold" : ""}`,
+											margin: "5px",
+											padding: "5px",
+										}}
+										key={date}
+										onClick={() => setSelectedDate(date)}
+									>
+										{date.toLocaleDateString("en-US")}
+									</div>
+							  ))
+							: null}
 					</div>
 					<Button onClick={fireOrder}>Order</Button>
 				</Card>

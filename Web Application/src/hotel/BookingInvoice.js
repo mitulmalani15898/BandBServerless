@@ -1,9 +1,11 @@
+// Author: Akanksha Singh (B00892887)
 import { Row, Col, Modal, Table } from "react-bootstrap";
 import { AuthContext } from "../providers/AuthProvider";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import moment from 'moment';
 
+//For viewing the invoice
 export default function BookingInvoice(props) {
 
     const room = props.room;

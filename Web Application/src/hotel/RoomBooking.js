@@ -1,3 +1,4 @@
+// Author: Akanksha Singh (B00892887)
 import { Container, Row, Col, Modal, Button } from "react-bootstrap";
 import Axios from 'axios';
 import moment from 'moment';
@@ -7,6 +8,7 @@ import { formatRoom } from './HotelMgmtConstants';
 import { AuthContext } from "../providers/AuthProvider";
 import { useContext } from "react";
 
+//To book a room
 export default function RoomBooking(props) {
     const room = props.room;
     const checkIn = props.checkIn;

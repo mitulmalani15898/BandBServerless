@@ -1,3 +1,4 @@
+// Author: Akanksha Singh (B00892887)
 import { Card, Row, Col, Dropdown } from "react-bootstrap";
 import { useState } from "react";
 import moment from 'moment';
@@ -9,6 +10,8 @@ import { useContext } from "react";
 import { formatRoom } from './HotelMgmtConstants';
 import BookingInvoice from "./BookingInvoice";
 
+//Displays the booking details
+//Actions to View invoice and Cancel Bookings
 export default function BookingDetailsCard (props) {
 
     const booking = props.booking;

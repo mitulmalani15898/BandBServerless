@@ -8,6 +8,7 @@ import { AuthContext } from "../providers/AuthProvider";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
+//For viewing all bookings by the user
 export default function UserRoomBookings () {
 
     const [pastBookings, setPastBookings] = useState([]);

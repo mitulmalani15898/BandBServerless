@@ -1,3 +1,4 @@
+// Author: Akanksha Singh (B00892887)
 import { useState, useEffect } from "react";
 import { Col, Container, Row, Button } from "react-bootstrap";
 import Axios from 'axios';
@@ -5,6 +6,7 @@ import moment from 'moment';
 import RoomType from './RoomType';
 import * as HotelMgmtConstants from './HotelMgmtConstants';
 
+//To find available rooms
 export default function Rooms () {
 
     const [checkIn, setCheckIn] = useState('');

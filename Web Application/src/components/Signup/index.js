@@ -90,35 +90,42 @@ const Signup = () => {
       }),
     ];
 
-    try {
-      const res = await postSecurityQnA({
-        type: "save",
-        userId,
-        securityQuestion,
-        securityAnswer: securityAnswer.toLowerCase(),
-        ceasarKey,
-      });
-      if (res.status === 201) {
-        const UserPool = getUserPool();
-        UserPool.signUp(email, password, attributeList, null, (err, result) => {
-          if (err) {
-            return setErrorMessage(err.message || JSON.stringify(err));
-          }
-          const cognitoUser = result.user;
-          console.log("user name is " + cognitoUser.getUsername());
-          setSuccessMessage(
-            `<div>Your <b>Ceasar Cipher Key</b> for future multi-factor authentication is <b>${ceasarKey}</b>. 
+    const UserPool = getUserPool();
+    UserPool.signUp(
+      email,
+      password,
+      attributeList,
+      null,
+      async (err, result) => {
+        if (err) {
+          return setErrorMessage(err.message || JSON.stringify(err));
+        }
+        const cognitoUser = result.user;
+        console.log("user name is " + cognitoUser.getUsername());
+
+        try {
+          const res = await postSecurityQnA({
+            type: "save",
+            userId,
+            securityQuestion,
+            securityAnswer: securityAnswer.toLowerCase(),
+            ceasarKey,
+          });
+          if (res.data.statusCode === 201) {
+            setSuccessMessage(
+              `<div>Your <b>Ceasar Cipher Key</b> for future multi-factor authentication is <b>${ceasarKey}</b>. 
              Please make sure you do not forget it.</div>`
-          );
-        });
-      } else {
-        setErrorMessage(
-          "Something went wrong, please try again after sometime."
-        );
+            );
+          } else {
+            setErrorMessage(
+              "Something went wrong, please try again after sometime."
+            );
+          }
+        } catch (err) {
+          setErrorMessage(err.message);
+        }
       }
-    } catch (err) {
-      setErrorMessage(err.message);
-    }
+    );
   };
 
   const {

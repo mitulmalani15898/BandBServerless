@@ -1,13 +1,15 @@
+"""
+    Author: Shiva Shankar Pandillapalli
+    Banner: B00880049
+    Task: Tour Service takes the information (user preferences information) received from the google pub/sub pushed by the web application and try to predict a tour for the user based on the received preferences data. Once the recommendations are predicted, those are passed to tour operator service to write the information to the database to persist the information to use it when needed.
+"""
+
 import googleapiclient.discovery
 import os
 import json
 import base64
 from google.cloud import pubsub_v1
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="./GCP_KEY.json"
-
-#requirements
-#google-api-python-client
-#google-cloud-pubsub
 
 def predict_recommendations(event,context):
     project="sonic-anagram-341118"
@@ -16,7 +18,7 @@ def predict_recommendations(event,context):
       pubsub_message = base64.b64decode(event['data']).decode('utf-8')
       # instances = "test@gmail.com~1,2,123,3,4"
       # print(instances)
-      user,s = (pubsub_message.split("~"))
+      user,s,persons,cost, duration = (pubsub_message.split("~"))
       s='[{"csv_row":"data","key":"1"}]'.replace("data",s)
       # print(s)
       instances = json.loads(s)
@@ -35,7 +37,7 @@ def predict_recommendations(event,context):
           raise RuntimeError(response['error'])
 
       print(response)
-      data = json.dumps({"user":user,"tour":response['predictions'][0]['classes'][0]})
+      data = json.dumps({"user":user,"tour":response['predictions'][0]['classes'][0],"persons":persons,"cost":cost, "duration":duration})
       print(data)
 
       publisher = pubsub_v1.PublisherClient()

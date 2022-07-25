@@ -31,8 +31,10 @@ const SecurityQnA = () => {
         userId: currentUser.userId,
         securityAnswer: userAnswer.toLowerCase(),
       });
-      if (res.status === 200) {
+      if (res.data.statusCode === 200) {
         setCurrentUser((prev) => ({ ...prev, userQnAVerified: true }));
+      } else {
+        throw new Error();
       }
     } catch (err) {
       setUserAnswer("");
